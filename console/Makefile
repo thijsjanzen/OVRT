@@ -1,4 +1,4 @@
-CFLAGS = -std=c++17 -O3 -Wall 
+CFLAGS = -std=c++17 -O3 -ffast-math -march=native
 OBJS = main.o analysis.o
 
 all: ${OBJS}
