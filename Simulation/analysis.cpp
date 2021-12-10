@@ -1,7 +1,7 @@
 #include "analysis.hpp"
 #include <fstream>
 
-std::array<size_t, 5> do_analysis(Param all_parameters) {
+std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
 
   std::unique_ptr<simulation> Simulation = create_simulation(all_parameters.using_3d, all_parameters);
 
@@ -120,6 +120,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters) {
   // B: tumor victory, e.g. only tumor cells remain
   // C: co-existence of the three populations
   cell_counts = Simulation->get_count_cell_types();
+  total_t     = Simulation->t;
   return cell_counts;
 }
 

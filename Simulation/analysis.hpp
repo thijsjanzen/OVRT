@@ -7,7 +7,7 @@
 #include <array>
 #include <string>
 
-std::array<size_t, 5> do_analysis(Param all_parameters);
+std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t);
 std::string get_outcome(const std::array<size_t, 5>& cell_counts);
 
 #endif // ANALYSIS_H

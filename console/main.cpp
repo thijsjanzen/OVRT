@@ -25,23 +25,25 @@ int main(int argc, char *argv[]) {
 
   read_parameters_from_ini(all_parameters, file_name);
 
-  std::array<size_t, 5> cell_counts = do_analysis(all_parameters);
+  float max_t = 0;
+  std::array<size_t, 5> cell_counts = do_analysis(all_parameters, max_t);
   std::string outcome = get_outcome(cell_counts);
 
   if(!file_exists("output.txt")) {
       // write header to file
       std::ofstream outfile("output.txt");
-      outfile << "birth_virus"      << "\t"
-              << "death_virus"      << "\t"
-              << "birth_cancer"     << "\t"
-              << "death_cancer"     << "\t"
-              << "freq_resistant"   << "\t"
-              << "outcome"          << "\t"
-              << "num_normal_cells" << "\t"
-              << "num_cancer_cells" << "\t"
-              << "num_infected_cells" << "\t"
+      outfile << "birth_virus"         << "\t"
+              << "death_virus"         << "\t"
+              << "birth_cancer"        << "\t"
+              << "death_cancer"        << "\t"
+              << "freq_resistant"      << "\t"
+              << "outcome"             << "\t"
+              << "num_normal_cells"    << "\t"
+              << "num_cancer_cells"    << "\t"
+              << "num_infected_cells"  << "\t"
               << "num_resistant_cells" << "\t"
-              << "num_empty_cells"   << "\n";
+              << "num_empty_cells"     << "\t"
+              << "total_runtime"       << "\n";
       outfile.close();
    }
 
@@ -52,9 +54,10 @@ int main(int argc, char *argv[]) {
           << all_parameters.death_cancer   << "\t"
           << all_parameters.freq_resistant << "\t"
           << outcome                       << "\t";
-    for(size_t i = 0; i < 5; ++i) {
-        outfile << cell_counts[i] << "\t";
-    }
+  for(size_t i = 0; i < 5; ++i) {
+      outfile << cell_counts[i] << "\t";
+  }
+  outfile << max_t << "\t";
   outfile << "\n";
   outfile.close();
 
