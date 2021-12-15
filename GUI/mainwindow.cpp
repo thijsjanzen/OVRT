@@ -157,7 +157,7 @@ void MainWindow::display_regular(bool using_3d, t_cell_display display_t_cells) 
         }
     }
   } else {
-      double frac = ui->depth_slider->value() / 100.0;
+      double frac = ui->depth_slider->value() / 100.1;
       size_t z = static_cast<size_t>(frac * row_size);
 
       for(size_t x = 0; x < row_size; ++x) {
@@ -885,27 +885,27 @@ void MainWindow::on_btn_use_3d_clicked()
 }
 
 // boxes!
-void MainWindow::on_box_death_cancer_resistant_valueChanged(double arg1)
+void MainWindow::on_box_death_cancer_resistant_valueChanged()
 {
     sim->parameters.death_cancer_resistant = ui->box_death_cancer_resistant->value();
 }
 
-void MainWindow::on_box_birth_infected_valueChanged(double arg1)
+void MainWindow::on_box_birth_infected_valueChanged()
 {
   sim->parameters.birth_infected = ui->box_birth_infected->value();
 }
 
-void MainWindow::on_box_death_infected_valueChanged(double arg1)
+void MainWindow::on_box_death_infected_valueChanged()
 {
     sim->parameters.death_infected = ui->box_death_infected->value();
 }
 
-void MainWindow::on_box_birth_cancer_resistant_valueChanged(double arg1)
+void MainWindow::on_box_birth_cancer_resistant_valueChanged()
 {
   sim->parameters.birth_cancer_resistant = ui->box_birth_cancer_resistant->value();
 }
 
-void MainWindow::on_box_grid_type_currentIndexChanged(int index)
+void MainWindow::on_box_grid_type_currentIndexChanged()
 {
   if (basic_setup_done) { // we don't want this to trigger prematurely
     auto grid_string = ui->box_grid_type->currentText();
@@ -928,7 +928,7 @@ void MainWindow::on_box_grid_type_currentIndexChanged(int index)
   }
 }
 
-void MainWindow::on_box_sq_num_cells_valueChanged(double arg1)
+void MainWindow::on_box_sq_num_cells_valueChanged()
 {
     if (ui->box_sq_num_cells->value() > 10) {
       all_parameters.sq_num_cells = ui->box_sq_num_cells->value();
@@ -938,82 +938,82 @@ void MainWindow::on_box_sq_num_cells_valueChanged(double arg1)
     }
 }
 
-void MainWindow::on_box_birth_normal_valueChanged(double arg1)
+void MainWindow::on_box_birth_normal_valueChanged()
 {
     sim->parameters.birth_normal = ui->box_birth_normal->value();
 }
 
-void MainWindow::on_box_death_normal_valueChanged(double arg1)
+void MainWindow::on_box_death_normal_valueChanged()
 {
     sim->parameters.death_normal = ui->box_death_normal->value();
 }
 
-void MainWindow::on_box_birth_cancer_valueChanged(double arg1)
+void MainWindow::on_box_birth_cancer_valueChanged()
 {
     sim->parameters.birth_cancer = ui->box_death_cancer->value();
 }
 
-void MainWindow::on_box_death_cancer_valueChanged(double arg1)
+void MainWindow::on_box_death_cancer_valueChanged()
 {
     sim->parameters.death_cancer = ui->box_death_cancer->value();
 }
 
-void MainWindow::on_box_maxtime_valueChanged(int arg1)
+void MainWindow::on_box_maxtime_valueChanged()
 {
     sim->parameters.maximum_time = ui->box_maxtime->value();
 }
 
-void MainWindow::on_box_cancer_time_valueChanged(int arg1)
+void MainWindow::on_box_cancer_time_valueChanged()
 {
     sim->parameters.time_adding_cancer = ui->box_cancer_time->value();
 }
 
-void MainWindow::on_box_virus_time_valueChanged(int arg1)
+void MainWindow::on_box_virus_time_valueChanged()
 {
   sim->parameters.time_adding_virus = ui->box_virus_time->value();
 }
 
-void MainWindow::on_box_prob_normal_infection_valueChanged(double arg1)
+void MainWindow::on_box_prob_normal_infection_valueChanged()
 {
   sim->parameters.prob_normal_infection = ui->box_prob_normal_infection->value();
 }
 
-void MainWindow::on_box_freq_resistant_cancer_valueChanged(double arg1)
+void MainWindow::on_box_freq_resistant_cancer_valueChanged()
 {
     sim->parameters.freq_resistant = ui->box_freq_resistant_cancer->value();
 }
 
-void MainWindow::on_box_percent_infected_valueChanged(double arg1)
+void MainWindow::on_box_percent_infected_valueChanged()
 {
     sim->parameters.percent_infected = ui->box_percent_infected->value();
 }
 
-void MainWindow::on_box_sq_num_pixels_valueChanged(double arg1)
+void MainWindow::on_box_sq_num_pixels_valueChanged()
 {
     sim->parameters.sq_num_pixels = ui->box_sq_num_pixels->value();
 }
 
-void MainWindow::on_box_normal_cells_valueChanged(int arg1)
+void MainWindow::on_box_normal_cells_valueChanged()
 {
     sim->parameters.initial_number_normal_cells = ui->box_normal_cells->value();
 }
 
-void MainWindow::on_box_cancer_cells_valueChanged(int arg1)
+void MainWindow::on_box_cancer_cells_valueChanged()
 {
     sim->parameters.initial_number_cancer_cells = ui->box_cancer_cells->value();
 }
 
-void MainWindow::on_box_distance_infection_death_valueChanged(double arg1)
+void MainWindow::on_box_distance_infection_death_valueChanged()
 {
     sim->parameters.distance_infection_upon_death = ui->box_distance_infection_death->value();
 }
 
-void MainWindow::on_box_prob_infection_death_valueChanged(double arg1)
+void MainWindow::on_box_prob_infection_death_valueChanged()
 {
     sim->parameters.prob_infection_upon_death = ui->box_prob_infection_death->value();
 }
 
-void MainWindow::on_box_infection_routine_currentIndexChanged(int index)
+void MainWindow::on_box_infection_routine_currentIndexChanged()
 {
     auto inf_type = ui->box_infection_routine->currentText();
     if (inf_type == "Center") {
@@ -1033,47 +1033,47 @@ void MainWindow::on_box_infection_routine_currentIndexChanged(int index)
     }
 }
 
-void MainWindow::on_depth_slider_actionTriggered(int action)
+void MainWindow::on_depth_slider_actionTriggered()
 {
     update_display();
 }
 
-void MainWindow::on_depth_slider_sliderMoved(int position)
+void MainWindow::on_depth_slider_sliderMoved()
 {
     update_display();
 }
 
-void MainWindow::on_box_diffusion_valueChanged(double arg1)
+void MainWindow::on_box_diffusion_valueChanged()
 {
    sim->parameters.diffusion = ui->box_diffusion->value();
 }
 
-void MainWindow::on_box_evaporation_valueChanged(double arg1)
+void MainWindow::on_box_evaporation_valueChanged()
 {
     sim->parameters.evaporation = ui->box_evaporation->value();
 }
 
-void MainWindow::on_box_inflammation_valueChanged(double arg1)
+void MainWindow::on_box_inflammation_valueChanged()
 {
     sim->parameters.t_cell_increase = ui->box_inflammation->value();
 }
 
-void MainWindow::on_box_t_cell_rate_valueChanged(double arg1)
+void MainWindow::on_box_t_cell_rate_valueChanged()
 {
     sim->parameters.t_cell_rate = ui->box_t_cell_rate->value();
 }
 
-void MainWindow::on_box_density_scaler_valueChanged(double arg1)
+void MainWindow::on_box_density_scaler_valueChanged()
 {
     sim->parameters.t_cell_density_scaler = ui->box_density_scaler->value();
 }
 
-void MainWindow::on_box_inflection_point_valueChanged(double arg1)
+void MainWindow::on_box_inflection_point_valueChanged()
 {
     sim->parameters.t_cell_inflection_point = ui->box_inflection_point->value();
 }
 
-void MainWindow::on_box_start_setup_activated(int index)
+void MainWindow::on_box_start_setup_activated()
 {
   auto start_string = ui->box_start_setup->currentText();
       if(start_string == "Grow")

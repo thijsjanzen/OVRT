@@ -10,11 +10,13 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../Simulation/analysis.cpp \
     main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp
 
 HEADERS += \
+    ../Simulation/analysis.hpp \
     ../Simulation/node_2d.hpp \
     ../Simulation/node_3d.hpp \
     ../Simulation/node_base.hpp \
@@ -25,16 +27,6 @@ HEADERS += \
     ../Simulation/simulation.hpp \
     ../Simulation/voronoi.hpp \
     ../Simulation/voronoi_tools.hpp \
-    Simulation/node_2d.hpp \
-    Simulation/node_3d.hpp \
-    Simulation/node_base.hpp \
-    Simulation/parameters.hpp \
-    Simulation/random_thijs.hpp \
-    Simulation/rndutils.hpp \
-    Simulation/setup.hpp \
-    Simulation/simulation.hpp \
-    Simulation/voronoi.hpp \
-    Simulation/voronoi_tools.hpp \
     mainwindow.h \
     qcustomplot.h
 
