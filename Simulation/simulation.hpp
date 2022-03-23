@@ -249,24 +249,39 @@ public:
     total_t_cell_concentration += parameters.t_cell_increase;
   }
 
-  void update_death_prob_t_cell(float t_cell_rate,
-                                size_t pos) {
-    cell_type focal_cell_type = world[pos].get_cell_type();
-    bool increase_death_rate = false;
+  bool use_increased_death_rate(cell_type focal_cell_type) const {
     if (focal_cell_type == cancer) {
       if (parameters.t_cell_effect == cancer_cell)
-          increase_death_rate = true;
-      if (parameters.t_cell_effect == both)
-          increase_death_rate = true;
+          return true;
+      if (parameters.t_cell_effect == cancer_and_resistant)
+          return true;
+      if (parameters.t_cell_effect == cancer_infected_resistant)
+          return true;
     }
     if (focal_cell_type == infected) {
       if (parameters.t_cell_effect == infected_cell)
-          increase_death_rate = true;
-      if (parameters.t_cell_effect == both)
-          increase_death_rate = true;
+          return true;
+      if (parameters.t_cell_effect == cancer_infected_resistant)
+          return true;
     }
+    if (focal_cell_type == resistant) {
+      if (parameters.t_cell_effect == cancer_and_resistant) {
+          return true;
+      }
+      if (parameters.t_cell_effect == cancer_infected_resistant) {
+          return true;
+      }
+    }
+    return false;
+  }
 
-    if (increase_death_rate) {
+
+
+  void update_death_prob_t_cell(float t_cell_rate,
+                                size_t pos) {
+    cell_type focal_cell_type = world[pos].get_cell_type();
+
+    if (use_increased_death_rate(focal_cell_type)) {
       float new_val = 1.f + t_cell_rate; // old value is always 1 (conditional on the current cell being alive)
       death_prob[focal_cell_type].update_entry(pos, new_val);
     }
@@ -286,29 +301,15 @@ public:
   float get_t_cell_concentration(size_t pos) const override {
     return world[pos].t_cell_concentration;
   }
+
   float get_added_death_rate(size_t pos) const override {
     auto c = world[pos].get_cell_type();
-    if (parameters.t_cell_effect == cancer_cell) {
-        if (c == cancer) {
-          return world[pos].added_death_rate;
-        } else {
-            return 0.f;
-        }
-    }
-    if (parameters.t_cell_effect == infected_cell) {
-        if (c == infected) {
-            return world[pos].added_death_rate;
-        } else {
-            return 0.f;
-        }
-    }
-    if (parameters.t_cell_effect == both) {
-        if (c == infected) return world[pos].added_death_rate;
-        if (c == cancer) return world[pos].added_death_rate;
-        return 0.0;
-    }
 
-    return world[pos].added_death_rate;
+    if (use_increased_death_rate(c)) {
+        return world[pos].added_death_rate;
+    } else {
+        return 0.f;
+    }
   }
 
 

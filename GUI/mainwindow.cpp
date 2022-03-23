@@ -88,7 +88,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->drpdwnbox_t_cell_type->addItem("cancer");
     ui->drpdwnbox_t_cell_type->addItem("infected");
-    ui->drpdwnbox_t_cell_type->addItem("both");
+    ui->drpdwnbox_t_cell_type->addItem("cancer and resistant");
+    ui->drpdwnbox_t_cell_type->addItem("cancer, infected and resistant");
 
     is_paused = false;
     is_running = false;
@@ -565,8 +566,11 @@ void MainWindow::update_parameters(Param& p) {
      p.t_cell_effect = cancer_cell;
    if (t_cell_type_string == "infected")
      p.t_cell_effect = infected_cell;
-   if (t_cell_type_string == "both")
-     p.t_cell_effect = both;
+   if (t_cell_type_string == "cancer and resistant")
+     p.t_cell_effect = cancer_and_resistant;
+   if (t_cell_type_string == "cancer, infected and resistant")
+     p.t_cell_effect = cancer_infected_resistant;
+
 
 
 
@@ -1110,8 +1114,11 @@ void MainWindow::on_drpdwnbox_t_cell_type_activated()
     sim->parameters.t_cell_effect = cancer_cell;
   if (t_cell_type_string == "infected")
     sim->parameters.t_cell_effect = infected_cell;
-  if (t_cell_type_string == "both")
-    sim->parameters.t_cell_effect = both;
+  if (t_cell_type_string == "cancer and resistant")
+    sim->parameters.t_cell_effect = cancer_and_resistant;
+  if (t_cell_type_string == "cancer, infected and resistant")
+    sim->parameters.t_cell_effect = cancer_infected_resistant;
+
 
   sim->reset_t_cell_death_rate();
   update_display();
