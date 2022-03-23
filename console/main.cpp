@@ -121,11 +121,13 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
 
   auto t_cell_target = from_config.getValueOfKey<std::string>("t_cell_type");
   if (t_cell_target == "cancer")
-    p.t_cell_effect == cancer_cell;
+    p.t_cell_effect = cancer_cell;
   if (t_cell_target == "infected")
-    p.t_cell_effect == infected_cell;
-  if (t_cell_target == "both")
-    p.t_cell_effect == both;
+    p.t_cell_effect = infected_cell;
+  if (t_cell_target == "cancer_resistant")
+    p.t_cell_effect = cancer_and_resistant;
+  if (t_cell_target == "cancer_resistant_infected")
+    p.t_cell_effect = cancer_infected_resistant;
 
   return;
 }
