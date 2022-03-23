@@ -14,6 +14,8 @@
 enum infection_routine {random_infection, center_infection, periphery_infection};
 enum start_type {full, grow, converge, empty_grid};
 enum grid_type {regular, voronoi, hexagonal};
+enum t_cell_type {cancer_cell, infected_cell, both};
+
 
 struct Param {
 
@@ -57,6 +59,7 @@ struct Param {
   bool using_3d;
 
   start_type start_setup;
+  t_cell_type t_cell_effect;
 
   float t_cell_increase;
   float evaporation;
@@ -108,6 +111,8 @@ struct Param {
     use_voronoi_grid = false;
     using_3d = false;
 
+
+    t_cell_effect = both;
     t_cell_increase = 0.f;
     evaporation = 0.01f;
     diffusion = 0.1f;

@@ -86,6 +86,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->box_grid_type->addItem("regular");
     ui->box_grid_type->addItem("hexagonal");
 
+    ui->drpdwnbox_t_cell_type->addItem("cancer");
+    ui->drpdwnbox_t_cell_type->addItem("infected");
+    ui->drpdwnbox_t_cell_type->addItem("both");
+
     is_paused = false;
     is_running = false;
 
@@ -555,6 +559,17 @@ void MainWindow::update_parameters(Param& p) {
        grid_type = grid_type::hexagonal; // plotting flag
        p.use_voronoi_grid = true; // simulation flag
    }
+
+   auto t_cell_type_string = ui->drpdwnbox_t_cell_type->currentText();
+   if (t_cell_type_string == "cancer")
+     p.t_cell_effect = cancer_cell;
+   if (t_cell_type_string == "infected")
+     p.t_cell_effect = infected_cell;
+   if (t_cell_type_string == "both")
+     p.t_cell_effect = both;
+
+
+
 
    p.sq_num_pixels = static_cast<size_t>(ui->box_sq_num_pixels->value());
 
@@ -1086,4 +1101,19 @@ void MainWindow::on_box_start_setup_activated()
       is_running = false;
       is_paused = true;
       setup_simulation();
+}
+
+void MainWindow::on_drpdwnbox_t_cell_type_activated()
+{
+  auto t_cell_type_string = ui->drpdwnbox_t_cell_type->currentText();
+  if (t_cell_type_string == "cancer")
+    sim->parameters.t_cell_effect = cancer_cell;
+  if (t_cell_type_string == "infected")
+    sim->parameters.t_cell_effect = infected_cell;
+  if (t_cell_type_string == "both")
+    sim->parameters.t_cell_effect = both;
+
+  sim->reset_t_cell_death_rate();
+  update_display();
+  QApplication::processEvents();
 }

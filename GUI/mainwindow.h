@@ -137,6 +137,8 @@ private slots:
 
     void on_box_start_setup_activated();
 
+    void on_drpdwnbox_t_cell_type_activated();
+
 private:
     Ui::MainWindow *ui;
     QImage image_;

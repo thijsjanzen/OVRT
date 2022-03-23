@@ -125,11 +125,10 @@ public:
   float calc_t_cell_added_death_rate(float t_cell_rate,
                                      float t_cell_density_scaler,
                                      float t_cell_inflection_point) {
-    if (t_cell_concentration < 1e-5f ||
-        node_type != cancer) {
+    if (t_cell_concentration < 1e-5f) {
         added_death_rate = 0.f;
         return 0.f;
-      }
+     }
 
     float denominator = 1.f + expf(5 * (t_cell_inflection_point - t_cell_concentration)); // same as -1 * (b - mu)
     float added_t_cell_death_rate = t_cell_rate * 1.f / denominator;
