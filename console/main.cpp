@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Welcome to this In Silico Simulation of oncolytic tumor virotherapy\n";
   std::cout << "Copyright 2019 - 2021, D. Bhatt, T. Janzen & F.J. Weissing\n";
-  std::cout << "This is version: 0.8.2\n";
+  std::cout << "This is version: 0.8.4\n";
 
   std::cout << "All files are to be found in this folder: \n";
   std::cout << argv[0] << "\n";

@@ -78,6 +78,7 @@
     <property name="font">
      <font>
       <pointsize>48</pointsize>
+      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
@@ -103,11 +104,12 @@
     <property name="font">
      <font>
       <pointsize>12</pointsize>
+      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>v0.8.2</string>
+     <string>v0.8.3</string>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
@@ -128,6 +130,7 @@
     <property name="font">
      <font>
       <pointsize>10</pointsize>
+      <weight>50</weight>
       <bold>false</bold>
      </font>
     </property>
@@ -599,7 +602,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="usesScrollButtons">
      <bool>false</bool>
@@ -884,6 +887,7 @@
          <property name="font">
           <font>
            <pointsize>18</pointsize>
+           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -980,6 +984,7 @@
       <property name="font">
        <font>
         <pointsize>18</pointsize>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -1425,7 +1430,7 @@
      <attribute name="title">
       <string>T-Cell</string>
      </attribute>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>11</x>
@@ -1606,6 +1611,7 @@
     <property name="font">
      <font>
       <pointsize>18</pointsize>
+      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
