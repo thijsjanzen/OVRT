@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->line_plot->graph(2)->setName("Infected");
     ui->line_plot->graph(3)->setName("Resistant");
 
-    QCPPlotTitle *fst_title = new QCPPlotTitle(ui->line_plot, "Number of cells");
+    QCPTextElement *fst_title = new QCPTextElement(ui->line_plot, "Number of cells");
     ui->line_plot->plotLayout()->insertRow(0);
     ui->line_plot->plotLayout()->addElement(0, 0, fst_title);
     ui->line_plot->xAxis->setLabel("Time (hours)");
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->line_plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignLeft);
 
     ui->line_plot->legend->setRowSpacing(-5);
-    ui->line_plot->setBackground(this->palette().background().color());
+    ui->line_plot->window()->setBackgroundRole(this->window()->palette().Base);
     ui->line_plot->legend->setBrush(Qt::transparent);
     ui->line_plot->legend->setBorderPen(QPen(Qt::transparent));
 
@@ -785,16 +785,16 @@ void MainWindow::update_plot(double t,
     y_i.append(cell_numbers[2]);
     y_r.append(cell_numbers[3]);
 
-    ui->line_plot->graph(0)->clearData();
+    ui->line_plot->graph(0)->data()->clear();
     ui->line_plot->graph(0)->setData(x_t, y_n);
 
-    ui->line_plot->graph(1)->clearData();
+    ui->line_plot->graph(1)->data()->clear();
     ui->line_plot->graph(1)->setData(x_t, y_c);
 
-    ui->line_plot->graph(2)->clearData();
+    ui->line_plot->graph(2)->data()->clear();
     ui->line_plot->graph(2)->setData(x_t, y_i);
 
-    ui->line_plot->graph(3)->clearData();
+    ui->line_plot->graph(3)->data()->clear();
     ui->line_plot->graph(3)->setData(x_t, y_r);
 
 
