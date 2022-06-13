@@ -208,7 +208,6 @@ public:
   }
 
   void diffuse() {
-    // do something
     std::vector<float> new_concentration(world.size(), 0.f);
     for(size_t i = 0; i < world.size(); ++i) {
       if(world[i].t_cell_concentration > 0.f) {
@@ -238,8 +237,8 @@ public:
         if(new_conc < 1e-5f) new_conc = 0.f;
         world[i].t_cell_concentration = new_conc;  // swap of the vectors
         world[i].update_t_cell_death_rate(parameters.t_cell_rate,
-                                         parameters.t_cell_density_scaler,
-                                         parameters.t_cell_inflection_point);
+                                          parameters.t_cell_density_scaler,
+                                          parameters.t_cell_inflection_point);
 
         update_t_cell_death_prob(world[i].t_cell_death_rate, i);
     }
@@ -472,13 +471,13 @@ public:
   }
 
   void reset_t_cell_death_rate() override {
-    size_t pos = 0;
-    for (auto& i : world) {
-        i.t_cell_concentration = 0.0;
-        i.t_cell_death_rate = 0.0;
-        auto local_cell_type = i.get_cell_type();
-        t_cell_death_prob[local_cell_type].update_entry(pos, 0.0);
-        pos++;
+    for (size_t pos = 0; pos < world.size(); ++pos) {
+        world[pos].t_cell_concentration = 0.0;
+        world[pos].t_cell_death_rate = 0.0;
+        auto local_cell_type = world[pos].get_cell_type();
+        if (local_cell_type != empty) {
+            t_cell_death_prob[local_cell_type].update_entry(pos, 0.0);
+        }
     }
   }
 
@@ -698,10 +697,15 @@ private:
     rates[7] = parameters.death_cancer_resistant * death_prob[resistant].get_total_sum();
 
     // t-cell related rates.
-    rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
-    rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
-    rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
-    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
+    rates[8]  = 0.0;
+    rates[9]  = 0.0;
+    rates[10] = 0.0;
+    rates[11] = 0.0;
+
+    if (use_increased_death_rate(normal)) rates[8] = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
+    if (use_increased_death_rate(cancer)) rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
+    if (use_increased_death_rate(infected)) rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
+    if (use_increased_death_rate(resistant)) rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
   }
 
   size_t pick_event(const std::array< float, 12>& rates, float sum) {

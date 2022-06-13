@@ -107,7 +107,7 @@
      </font>
     </property>
     <property name="text">
-     <string>v0.8.3</string>
+     <string>v0.9.0</string>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
@@ -599,7 +599,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="usesScrollButtons">
      <bool>false</bool>
