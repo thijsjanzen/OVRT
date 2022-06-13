@@ -37,7 +37,6 @@ public:
 
   virtual cell_type get_cell_type(size_t) const = 0;
   virtual float get_t_cell_concentration(size_t) const = 0;
-  virtual float get_added_death_rate(size_t) const = 0;
 
 
   virtual std::array<size_t, 5> get_count_cell_types() const = 0;
@@ -46,6 +45,7 @@ public:
 
   virtual const std::array< binned_distribution, 4 >& get_growth_prob()  = 0;
   virtual const std::array< binned_distribution, 4 >& get_death_prob()  = 0;
+  virtual const std::array< binned_distribution, 4 >& get_T_cell_death_prob() = 0;
 
   virtual void set_infection_type(infection_routine) = 0;
   virtual void set_percent_infected(float percent_infected) = 0;
@@ -59,6 +59,8 @@ public:
   virtual void add_cells(const cell_type& focal_cell_type) = 0;
 
   virtual void obtain_equilibrium(bool verbose) = 0;
+
+  virtual float get_t_cell_rate(size_t) = 0;
   virtual void reset_t_cell_death_rate() = 0;
 };
 
@@ -73,6 +75,7 @@ public:
 
   std::array< binned_distribution, 4 > growth_prob;
   std::array< binned_distribution, 4 > death_prob;
+  std::array< binned_distribution, 4 > t_cell_death_prob;
 
   const std::array< binned_distribution, 4 >& get_growth_prob() override {
     return growth_prob;
@@ -80,6 +83,10 @@ public:
 
   const std::array< binned_distribution, 4 >& get_death_prob()  override {
       return death_prob;
+  }
+
+  const std::array< binned_distribution, 4 >& get_T_cell_death_prob()  override {
+      return t_cell_death_prob;
   }
 
   std::array<size_t, 5> num_cell_types;
@@ -106,6 +113,7 @@ public:
     for(size_t i = 0; i < 4; ++i) {
         growth_prob[i] = temp;
         death_prob[i] = temp;
+        t_cell_death_prob[i] = temp;
       }
 
     long_distance_infection_probability = std::vector<double>(sq_size, parameters.prob_infection_upon_death);
@@ -134,6 +142,7 @@ public:
     for(size_t i = 0; i < 4; ++i) {
         growth_prob[i] = temp;
         death_prob[i] = temp;
+        t_cell_death_prob[i] = temp;
       }
 
     long_distance_infection_probability = std::vector<double>(sq_size, parameters.prob_infection_upon_death);
@@ -221,8 +230,6 @@ public:
              new_concentration[other_pos] += diffusion_amount;
            }
         }
-        //new_concentration[i] = current_conc;
-
       }
     }
 
@@ -230,14 +237,11 @@ public:
         float new_conc =  new_concentration[i] * (1 - parameters.evaporation);
         if(new_conc < 1e-5f) new_conc = 0.f;
         world[i].t_cell_concentration = new_conc;  // swap of the vectors
-        if(new_conc > 0.f) {
-          float added_t_cell_death_rate =
-              world[i].calc_t_cell_added_death_rate(parameters.t_cell_rate,
-                                                    parameters.t_cell_density_scaler,
-                                                    parameters.t_cell_inflection_point);
+        world[i].update_t_cell_death_rate(parameters.t_cell_rate,
+                                         parameters.t_cell_density_scaler,
+                                         parameters.t_cell_inflection_point);
 
-          update_death_prob_t_cell(added_t_cell_death_rate, i);
-        }
+        update_t_cell_death_prob(world[i].t_cell_death_rate, i);
     }
     total_t_cell_concentration = std::accumulate(new_concentration.begin(),
                                                  new_concentration.end(),
@@ -275,25 +279,6 @@ public:
     return false;
   }
 
-
-
-  void update_death_prob_t_cell(float t_cell_rate,
-                                size_t pos) {
-    cell_type focal_cell_type = world[pos].get_cell_type();
-
-    if (use_increased_death_rate(focal_cell_type)) {
-      float new_val = 1.f + t_cell_rate; // old value is always 1 (conditional on the current cell being alive)
-      death_prob[focal_cell_type].update_entry(pos, new_val);
-    }
-  }
-
-  void reset_t_cell_death_rate() override {
-    for (const auto& i : world) {
-        update_death_prob_t_cell(i.pos, i.added_death_rate);
-    }
-  }
-
-
   cell_type get_cell_type(size_t pos) const override {
     return world[pos].get_cell_type();
   }
@@ -301,17 +286,6 @@ public:
   float get_t_cell_concentration(size_t pos) const override {
     return world[pos].t_cell_concentration;
   }
-
-  float get_added_death_rate(size_t pos) const override {
-    auto c = world[pos].get_cell_type();
-
-    if (use_increased_death_rate(c)) {
-        return world[pos].added_death_rate;
-    } else {
-        return 0.f;
-    }
-  }
-
 
   void update_growth_prob(size_t pos) {
     std::array<float, 4> probs = world[pos].calc_prob_of_growth();
@@ -326,6 +300,15 @@ public:
         if (i == world[pos].get_cell_type()) new_val = 1.f;
 
         death_prob[i].update_entry(pos, new_val);
+      }
+  }
+
+  void update_t_cell_death_prob(float new_prob, size_t pos) {
+    for (size_t i = 0; i < 4; ++i) {
+        float new_val = 0.f;
+        if (i == world[pos].get_cell_type()) new_val = new_prob;
+
+        t_cell_death_prob[i].update_entry(pos, new_val);
       }
   }
 
@@ -479,6 +462,24 @@ public:
   }
   void set_start_setup(start_type new_type) override {
     parameters.start_setup = new_type;
+  }
+
+  float get_t_cell_rate(size_t pos) override {
+      auto local_cell_type = world[pos].get_cell_type();
+      if (local_cell_type == empty) return 0.f;
+
+      return t_cell_death_prob[local_cell_type].get_value(pos);
+  }
+
+  void reset_t_cell_death_rate() override {
+    size_t pos = 0;
+    for (auto& i : world) {
+        i.t_cell_concentration = 0.0;
+        i.t_cell_death_rate = 0.0;
+        auto local_cell_type = i.get_cell_type();
+        t_cell_death_prob[local_cell_type].update_entry(pos, 0.0);
+        pos++;
+    }
   }
 
   // size_t find_center(const cell_type& focal_cell_type) const;
@@ -677,7 +678,7 @@ public:
 private:
 
 
-  std::array< float, 8> rates;
+  std::array< float, 12> rates;
 
   std::vector<double> long_distance_infection_probability;
 
@@ -695,9 +696,15 @@ private:
 
     rates[6] = parameters.birth_cancer_resistant * growth_prob[resistant].get_total_sum();
     rates[7] = parameters.death_cancer_resistant * death_prob[resistant].get_total_sum();
+
+    // t-cell related rates.
+    rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
+    rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
+    rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
+    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
   }
 
-  size_t pick_event(const std::array< float, 8>& rates, float sum) {
+  size_t pick_event(const std::array< float, 12>& rates, float sum) {
     float r = rndgen.uniform() * sum;
     for(size_t i = 0; i < rates.size(); ++i) {
         r -= rates[i];
@@ -716,7 +723,7 @@ private:
           break;
         }
       case 1: {
-          implement_death(normal);        // death normal
+          implement_death(normal, false);        // death normal
           break;
         }
 
@@ -725,7 +732,7 @@ private:
           break;
         }
       case 3: {
-          implement_death(cancer);        // death cancer
+          implement_death(cancer, false);        // death cancer
           break;
         }
 
@@ -734,7 +741,7 @@ private:
           break;
         }
       case 5: {
-          implement_death(infected);     // death infection
+          implement_death(infected, false);     // death infection
           break;
         }
 
@@ -743,9 +750,26 @@ private:
           break;
         }
       case 7: {
-          implement_death(resistant);     // death infection
+          implement_death(resistant, false);     // death infection
           break;
         }
+
+      case 8: {
+          implement_death(normal, true);
+          break;
+      }
+      case 9: {
+        implement_death(cancer, true);
+        break;
+      }
+      case 10: {
+        implement_death(infected, true);
+         break;
+      }
+      case 11: {
+        implement_death(resistant, true);
+        break;
+      }
 
       default: {
           // do nothing
@@ -754,9 +778,13 @@ private:
       }
   }
 
-  void implement_death(const cell_type& parent) {
-      size_t position_of_dying_cell = death_prob[parent].draw_explicit(rndgen);
-
+  void implement_death(const cell_type& parent, bool by_t_cell) {
+      size_t position_of_dying_cell;
+      if (by_t_cell) {
+          position_of_dying_cell = t_cell_death_prob[parent].draw_explicit(rndgen);
+      } else {
+          position_of_dying_cell = death_prob[parent].draw_explicit(rndgen);
+      }
       change_cell_type(position_of_dying_cell, empty);
 
       if (parent == infected && parameters.prob_infection_upon_death > 0.f) {
@@ -766,8 +794,6 @@ private:
           increase_t_cell_concentration(position_of_dying_cell);
       }
   }
-
-
 
   void implement_growth(const cell_type& parent) {
 
@@ -1213,6 +1239,8 @@ private:
         all_polys.push_back(poly);
       }
   }
+
+
 };
 
 inline std::unique_ptr<simulation> create_simulation(bool use_3d,

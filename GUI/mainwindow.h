@@ -60,6 +60,8 @@ public:
 
     void update_3d_gui();
 
+    void update_t_cell_hist();
+
 private slots:
     void on_btn_start_clicked();
 
@@ -172,6 +174,8 @@ private:
     std::unique_ptr<simulation> sim;
 
     std::vector< QColor > colorz;
+
+    QCPBars *tcell_bars;
 };
 
 

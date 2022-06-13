@@ -57,6 +57,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->line_plot->legend->setBrush(Qt::transparent);
     ui->line_plot->legend->setBorderPen(QPen(Qt::transparent));
 
+    ui->t_cell_plot->addGraph();
+
+    tcell_bars = new QCPBars(ui->t_cell_plot->xAxis,
+                             ui->t_cell_plot->yAxis);
+
+    tcell_bars->setName("Inflammation factor concentration");
+    tcell_bars->setPen(QPen(Qt::blue));
+    tcell_bars->setBrush(QBrush(QColor(0,0,255, static_cast<int>(0.5 * 255))));
+    tcell_bars->setAntialiased(false);
+    tcell_bars->setAntialiasedFill(false);
 
     ui->progressBar->setValue(0);
 
@@ -157,7 +167,7 @@ void MainWindow::display_regular(bool using_3d, t_cell_display display_t_cells) 
                 row[local_index] = get_t_cell_color(sim->get_t_cell_concentration(index)).rgba();
               }
             if(display_t_cells == t_cell_display::added_rate) { // added death rate
-               row[local_index] = get_t_cell_color(sim->get_added_death_rate(index) ).rgba();
+               row[local_index] = get_t_cell_color(sim->get_t_cell_rate(index) ).rgba();
             }
         }
     }
@@ -178,7 +188,8 @@ void MainWindow::display_regular(bool using_3d, t_cell_display display_t_cells) 
                 row[y] = get_t_cell_color(sim->get_t_cell_concentration(index)).rgba();
               }
             if(display_t_cells == t_cell_display::added_rate) { // added death rate
-               row[y] = get_t_cell_color(sim->get_added_death_rate(index) ).rgba();
+              // row[y] = get_t_cell_color(sim->get_added_death_rate(index) ).rgba();
+                row[y] = get_t_cell_color(sim->get_t_cell_rate(index)).rgba();
             }
           }
       }
@@ -197,7 +208,7 @@ void MainWindow::display_voronoi(t_cell_display display_t_cells) {
       } else if (display_t_cells == t_cell_display::no_display) {
           t_col = colorz[sim->get_cell_type(i)];
       } else if (display_t_cells == t_cell_display::added_rate) {
-          t_col = get_t_cell_color(sim->get_added_death_rate(i));
+          t_col = get_t_cell_color(sim->get_t_cell_rate(i)).rgba();;
       }
 
       QBrush brush(t_col);
@@ -462,6 +473,60 @@ void MainWindow::update_image(const std::array< binned_distribution, 4 >& growth
     ui->q_label->update();
 }
 
+void MainWindow::update_t_cell_hist() {
+
+    std::vector<float> vals;
+    for(size_t i = 0; i < sim->num_cells; ++i) {
+        if (sim->get_t_cell_concentration(i) > 0.0) {
+            vals.push_back(sim->get_t_cell_concentration(i));
+        }
+    }
+    if (vals.empty()) return;
+    std::sort(vals.begin(), vals.end());
+    float max_conc = vals.back();
+    float min_conc = vals.front();
+
+
+   int num_bins = 20;
+   std::vector<size_t> hist(num_bins, 0);
+   float bin_size = (max_conc - min_conc) / num_bins;
+   tcell_bars->setWidth(bin_size);
+
+   for (const auto& i : vals) {
+       size_t bin = (i - min_conc) / (bin_size);
+       if (bin >= hist.size()) {
+        hist.back()++;
+       } else {
+        hist[bin]++;
+       }
+   }
+
+
+   QVector<double> xvals(num_bins);
+   QVector<double> yvals(num_bins);
+   double max_y_val = 0.0;
+   for(size_t i = 0; i < hist.size(); ++i) {
+       xvals[i] = min_conc + i * bin_size;
+       yvals[i] = hist[i];
+       if(hist[i] > max_y_val) max_y_val = hist[i];
+   }
+
+   double min_x = min_conc * 0.9;
+   double max_x = 1.1 * max_conc;
+
+
+   //tcell_bars->
+   tcell_bars->setData(xvals, yvals);
+
+   ui->t_cell_plot->xAxis->setRange(min_x, max_x);
+
+   ui->t_cell_plot->yAxis->setRange(0, max_y_val * 1.05);
+
+   ui->t_cell_plot->replot();
+   ui->t_cell_plot->update();
+}
+
+
 std::string get_string(std::string s, float v) {
     std::string output = s + " " + std::to_string(v) + "\n";
     return output;
@@ -670,6 +735,11 @@ void MainWindow::update_display() {
 
   update_plot(static_cast<double>(sim->t),
               sim->get_count_cell_types());
+
+  if (sim->parameters.t_cell_increase > 0.0) {
+      update_t_cell_hist();
+  }
+
   QApplication::processEvents();
 }
 

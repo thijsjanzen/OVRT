@@ -22,7 +22,7 @@ public:
   float prob_normal_infected;
 
   float t_cell_concentration;
-  float added_death_rate;
+  float t_cell_death_rate;
 
   std::vector< node_base* > neighbors;
 
@@ -40,7 +40,7 @@ public:
     prob_normal_infected = 0.f;
     check_identifier = 0;
     t_cell_concentration = 0.f;
-    added_death_rate = 0.f;
+    t_cell_death_rate = 0.f;
   }
 
   void set_coordinates(size_t row_size);
@@ -122,12 +122,12 @@ public:
     t_cell_concentration += amount;
   }
 
-  float calc_t_cell_added_death_rate(float t_cell_rate,
-                                     float t_cell_density_scaler,
-                                     float t_cell_inflection_point) {
+  void update_t_cell_death_rate(float t_cell_rate,
+                                float t_cell_density_scaler,
+                                float t_cell_inflection_point) {
     if (t_cell_concentration < 1e-5f) {
-        added_death_rate = 0.f;
-        return 0.f;
+        t_cell_death_rate = 0.f;
+        return;
      }
 
     float denominator = 1.f + expf(5 * (t_cell_inflection_point - t_cell_concentration)); // same as -1 * (b - mu)
@@ -135,21 +135,20 @@ public:
 
     if (added_t_cell_death_rate >= std:: numeric_limits<float>::max()) {
         added_t_cell_death_rate = 1e9;
-      }
+     }
 
     float mult = 1.0f - t_cell_density_scaler *
         freq_type_neighbours(cancer);
 
     if(mult < 0.f) mult = 0.f;
-    float output = mult * added_t_cell_death_rate;
-    if (std::isinf(output)) {
-        output = 1e9;
+    t_cell_death_rate = mult * added_t_cell_death_rate;
+    if (std::isinf(t_cell_death_rate)) {
+        t_cell_death_rate = 1e9;
       }
-    if (output >= std:: numeric_limits<float>::max()) {
-        output = 1e9;
+    if (t_cell_death_rate >= std:: numeric_limits<float>::max()) {
+        t_cell_death_rate = 1e9;
       }
-    added_death_rate = output;
-    return output;
+    return;
   }
 
 };
