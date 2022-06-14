@@ -92,9 +92,9 @@ TEST_CASE( "birth_death" )
    }
 
    // test pick event
-   std::array<float, 8 > vx = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+   std::array<float, 12 > vx = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
    REQUIRE(Simulation.test_pick_event(vx, 0.0) == 0);
-   for(size_t i = 0; i < 8; ++i) {
+   for(size_t i = 0; i < 12; ++i) {
     vx[i] = 1.0f;
     REQUIRE(Simulation.test_pick_event(vx, 1.0) == i);
     vx[i] = 0.0f;
@@ -869,12 +869,13 @@ TEST_CASE( "infect_second_time" )
   all_parameters.time_adding_virus = 100;
   all_parameters.time_adding_virus_2 = 100;
 
-  std::array<size_t, 5> result = do_analysis(all_parameters);
+  float t;
+  std::array<size_t, 5> result = do_analysis(all_parameters, t);
   std::string outcome = get_outcome(result);
   REQUIRE(outcome ==  "C");
 
   all_parameters.use_voronoi_grid = true;
-  result = do_analysis(all_parameters);
+  result = do_analysis(all_parameters, t);
   std::string outcome2 = get_outcome(result);
   REQUIRE(outcome ==  outcome2);
 }
@@ -1238,7 +1239,7 @@ TEST_CASE( "birth_death_3d" )
    }
 
    // test pick event
-   std::array<float, 8 > vx = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+   std::array<float, 12 > vx = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
    REQUIRE(Simulation.test_pick_event(vx, 0.0) == 0);
    for(size_t i = 0; i < 8; ++i) {
     vx[i] = 1.0f;

@@ -577,7 +577,7 @@ public:
     update_rates();
   }
 
-  size_t test_pick_event(const std::array<float, 8>& v, float s) {
+  size_t test_pick_event(const std::array<float, 12>& v, float s) {
     return pick_event(v, s);
   }
 

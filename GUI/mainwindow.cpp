@@ -518,21 +518,17 @@ void MainWindow::update_t_cell_hist() {
 
    QVector<double> xvals(num_bins);
    QVector<double> yvals(num_bins);
-   double max_y_val = 0.0;
+ //  double max_y_val = 0.0;
    for(size_t i = 0; i < hist.size(); ++i) {
        xvals[i] = min_conc + i * bin_size;
        yvals[i] = hist[i];
-       if(hist[i] > max_y_val) max_y_val = hist[i];
+ //      if(hist[i] > max_y_val) max_y_val = hist[i];
    }
-
-   double min_x = min_conc * 0.9;
-   double max_x = 1.1 * max_conc;
-
 
    //tcell_bars->
    tcell_bars->setData(xvals, yvals);
 
-   ui->t_cell_plot->xAxis->setRange(-5, 0.0);
+  // ui->t_cell_plot->xAxis->setRange(-5, 0.0);
 
   // ui->t_cell_plot->yAxis->setRange(0, max_y_val * 1.05);
 
