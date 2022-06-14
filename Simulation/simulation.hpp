@@ -697,10 +697,10 @@ private:
     rates[7] = parameters.death_cancer_resistant * death_prob[resistant].get_total_sum();
 
     // t-cell related rates.
-    rates[8]  = 0.0;
-    rates[9]  = 0.0;
-    rates[10] = 0.0;
-    rates[11] = 0.0;
+    rates[8]  = 0.f;
+    rates[9]  = 0.f;
+    rates[10] = 0.f;
+    rates[11] = 0.f;
 
     if (use_increased_death_rate(normal)) rates[8] = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
     if (use_increased_death_rate(cancer)) rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();

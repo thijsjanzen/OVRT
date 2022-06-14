@@ -17,7 +17,8 @@ enum grid_type {regular, voronoi, hexagonal};
 enum t_cell_type {cancer_cell,
                   infected_cell,
                   cancer_and_resistant,
-                  cancer_infected_resistant};
+                  cancer_infected_resistant,
+                  none};
 
 
 struct Param {
@@ -115,7 +116,7 @@ struct Param {
     using_3d = false;
 
 
-    t_cell_effect = cancer_infected_resistant;
+    t_cell_effect = none;
     t_cell_increase = 0.f;
     evaporation = 0.01f;
     diffusion = 0.1f;

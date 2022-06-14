@@ -703,7 +703,7 @@ TEST_CASE( "update_one_step")
   Simulation.update_one_step();
 
   std::array<size_t, 5> cell_counts_after = Simulation.count_cell_types();
-  REQUIRE(cell_counts_after[cancer] ==
+  CHECK(cell_counts_after[cancer] ==
                     401);
 }
 
