@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 2
+      - name: Before Install
+        run: |
+          sudo apt-get install g++
+      - name: Run Tests
+        run: |
+          g++ -std=c++17 -o TestProgram -fprofile-arcs -ftest-coverage -fprofile-generate test/main.cpp Simulation/analysis.cpp
+          ./TestProgram
+          gcov -o . test/main.cpp Simulation/analysis.cpp
+      - name: Upload
+        uses: codecov/codecov-action@v1
+        with:
+          files: random_thijs.hpp.gcov,simulation.hpp.gcov,parameters.hpp.gcov,node_base.hpp.gcov,simulation.hpp.gcov,analysis.cpp.gcov,node_3d.hpp.gcov,node_2d.hpp.gcov
