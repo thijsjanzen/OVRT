@@ -233,14 +233,17 @@ public:
     }
 
     for(size_t i = 0; i < new_concentration.size(); ++i) {
-        float new_conc =  new_concentration[i] * (1 - parameters.evaporation);
-        if(new_conc < 1e-5f) new_conc = 0.f;
-        world[i].t_cell_concentration = new_conc;  // swap of the vectors
+        if (new_concentration[i] > 0.f) {
+            new_concentration[i] *= (1.f - parameters.evaporation);
+            if(new_concentration[i] < 1e-5f) new_concentration[i] = 0.f;
+        }
+        world[i].t_cell_concentration = new_concentration[i];  // swap of the vectors
         world[i].update_t_cell_death_rate(parameters.t_cell_rate,
                                           parameters.t_cell_density_scaler,
                                           parameters.t_cell_inflection_point);
 
         update_t_cell_death_prob(world[i].t_cell_death_rate, i);
+
     }
     total_t_cell_concentration = std::accumulate(new_concentration.begin(),
                                                  new_concentration.end(),

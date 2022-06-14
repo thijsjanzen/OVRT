@@ -3,6 +3,61 @@
 #include "../Simulation/simulation.hpp"
 #include "../Simulation/analysis.hpp"
 
+TEST_CASE("diffuse")
+{
+    std::cout << "testing diffusion\n";
+    Param all_parameters;
+    all_parameters.sq_num_cells = 100;
+    all_parameters.use_voronoi_grid = false;
+    all_parameters.start_setup = empty_grid;
+
+    all_parameters.t_cell_increase = 1.0;
+    all_parameters.diffusion = 0.1;
+    all_parameters.evaporation = 0.0;
+
+    simulation_impl<node_2d> Simulation(all_parameters);
+
+    std::vector< std::vector< voronoi_point > > filler;
+
+    Simulation.initialize_network(filler, regular);
+    Simulation.t = 0.f;
+
+
+    CHECK(Simulation.total_t_cell_concentration < 1e-5f);
+    size_t x = 50;
+    size_t y = 50;
+    size_t pos = x + y * 100;
+    Simulation.increase_t_cell_concentration(pos);
+
+    CHECK(std::abs(Simulation.total_t_cell_concentration - all_parameters.t_cell_increase) < 1e-5f);
+
+    Simulation.diffuse();
+
+    CHECK(std::abs(Simulation.total_t_cell_concentration - all_parameters.t_cell_increase) < 1e-5f); // no evaporation!
+
+    CHECK(std::abs(Simulation.world[pos].t_cell_concentration  - (1.f - all_parameters.diffusion)) < 1e-5f);
+
+    size_t pos2 = (x - 1) + y * 100;
+    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    pos2 = (x + 1) + y * 100;
+    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    pos2 = x + (y - 1) * 100;
+    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    pos2 = x + (y + 1) * 100;
+    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+
+    Simulation.parameters.evaporation = 0.1;
+    Simulation.diffuse();
+
+    float observed = Simulation.total_t_cell_concentration;
+    float expected = all_parameters.t_cell_increase * (1.f - Simulation.parameters.evaporation);
+
+    CHECK(std::abs(observed - expected) < 1e-5f);
+
+}
+
+
+
 
 TEST_CASE( "birth_death" )
 {
@@ -846,9 +901,7 @@ TEST_CASE( "obtain_equilibrium" )
   std::array<size_t, 5> ctypes = Simulation.count_cell_types();
 
   REQUIRE(ctypes[normal] > 0.0);
-  REQUIRE(ctypes[normal] > 300);
   REQUIRE(ctypes[normal] < 10000);
-  REQUIRE(ctypes[normal] < 6000);
 }
 
 
