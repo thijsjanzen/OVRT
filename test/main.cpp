@@ -38,13 +38,13 @@ TEST_CASE("diffuse")
     CHECK(std::abs(Simulation.world[pos].t_cell_concentration  - (1.f - all_parameters.diffusion)) < 1e-5f);
 
     size_t pos2 = (x - 1) + y * 100;
-    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    CHECK(Simulation.get_t_cell_concentration(pos2) == all_parameters.diffusion * 0.25f);
     pos2 = (x + 1) + y * 100;
-    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    CHECK(Simulation.get_t_cell_concentration(pos2) == all_parameters.diffusion * 0.25f);
     pos2 = x + (y - 1) * 100;
-    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    CHECK(Simulation.get_t_cell_concentration(pos2) == all_parameters.diffusion * 0.25f);
     pos2 = x + (y + 1) * 100;
-    CHECK(Simulation.world[pos2].t_cell_concentration == all_parameters.diffusion * 0.25f);
+    CHECK(Simulation.get_t_cell_concentration(pos2) == all_parameters.diffusion * 0.25f);
 
     Simulation.parameters.evaporation = 0.1;
     Simulation.diffuse();
