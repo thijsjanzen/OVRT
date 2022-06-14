@@ -13,17 +13,28 @@ void obtain_equilibrium(simulation& Simulation, const Param& all_parameters);
 int main(int argc, char *argv[]) {
 
   std::cout << "Welcome to this In Silico Simulation of oncolytic tumor virotherapy\n";
-  std::cout << "Copyright 2019 - 2021, D. Bhatt, T. Janzen & F.J. Weissing\n";
-  std::cout << "This is version: 0.8.4\n";
+  std::cout << "Copyright 2019 - 2022, D. Bhatt, T. Janzen & F.J. Weissing\n";
+  std::cout << "This is version: 0.9.0\n";
 
   std::cout << "All files are to be found in this folder: \n";
   std::cout << argv[0] << "\n";
 
+
+
+  InputParser input(argc, argv);
+
   std::string file_name = "config.ini";
+
+  const std::string &filename = input.getCmdOption("-f");
+  if (!filename.empty()){
+          file_name = filename;
+  }
 
   Param all_parameters;
 
   read_parameters_from_ini(all_parameters, file_name);
+
+  read_from_command_line(input, all_parameters);
 
   float max_t = 0;
   std::array<size_t, 5> cell_counts = do_analysis(all_parameters, max_t);

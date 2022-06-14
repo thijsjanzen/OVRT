@@ -124,6 +124,8 @@ struct Param {
     t_cell_threshold = 0.2f;
     t_cell_density_scaler = 1.0f;
   }
+
+
 };
 
 #endif /* parameters_h */
