@@ -130,15 +130,33 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
   if(grid_string == "voronoi")
     p.use_voronoi_grid = true;
 
-  auto t_cell_target = from_config.getValueOfKey<std::string>("t_cell_type");
-  if (t_cell_target == "cancer")
-    p.t_cell_effect = cancer_cell;
-  if (t_cell_target == "infected")
-    p.t_cell_effect = infected_cell;
-  if (t_cell_target == "cancer_resistant")
-    p.t_cell_effect = cancer_and_resistant;
-  if (t_cell_target == "cancer_resistant_infected")
-    p.t_cell_effect = cancer_infected_resistant;
+  auto t_cell_sensitivity_stromal_string = from_config.getValueOfKey<std::string>("t_cell_stromal");
+  if (t_cell_sensitivity_stromal_string == "sensitive") {
+      p.t_cell_sensitivity[normal] = true;
+  } else {
+      p.t_cell_sensitivity[normal] = false;
+  }
+
+  auto t_cell_sensitivity_cancer_string = from_config.getValueOfKey<std::string>("t_cell_cancer");
+  if (t_cell_sensitivity_cancer_string == "sensitive") {
+      p.t_cell_sensitivity[cancer] = true;
+  } else {
+      p.t_cell_sensitivity[cancer] = false;
+  }
+
+  auto t_cell_sensitivity_infected_string = from_config.getValueOfKey<std::string>("t_cell_infected");
+  if (t_cell_sensitivity_infected_string == "sensitive") {
+      p.t_cell_sensitivity[infected] = true;
+  } else {
+      p.t_cell_sensitivity[infected] = false;
+  }
+
+  auto t_cell_sensitivity_resistant_string = from_config.getValueOfKey<std::string>("t_cell_resistant");
+  if (t_cell_sensitivity_resistant_string == "sensitive") {
+      p.t_cell_sensitivity[resistant] = true;
+  } else {
+      p.t_cell_sensitivity[resistant] = false;
+  }
 
   return;
 }

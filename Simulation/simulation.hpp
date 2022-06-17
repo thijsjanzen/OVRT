@@ -445,28 +445,11 @@ public:
       if (local_cell_type == empty) return 0.f;
 
       auto local_death_rate = 0.0;
-      switch(local_cell_type) {
-          case normal: {
-              if (parameters.t_cell_sensitivity_stromal) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
-              break;
-          }
-          case cancer: {
-              if (parameters.t_cell_sensitivity_cancer) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
-              break;
-          }
-          case infected: {
-              if (parameters.t_cell_sensitivity_infected) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
-              break;
-          }
-          case resistant: {
-              if (parameters.t_cell_sensitivity_resistant) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
-              break;
-          }
-          default: {
-              local_death_rate = 0.0;
-              break;
-          }
+
+      if (parameters.t_cell_sensitivity[local_cell_type]) {
+          local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
       }
+
       return local_death_rate;
   }
 
@@ -702,10 +685,10 @@ private:
     rates[10] = 0.f;
     rates[11] = 0.f;
 
-    if (parameters.t_cell_sensitivity_stromal)      rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
-    if (parameters.t_cell_sensitivity_cancer)       rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
-    if (parameters.t_cell_sensitivity_infected)     rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
-    if (parameters.t_cell_sensitivity_resistant)    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
+    if (parameters.t_cell_sensitivity[normal])       rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
+    if (parameters.t_cell_sensitivity[cancer])       rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
+    if (parameters.t_cell_sensitivity[infected])     rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
+    if (parameters.t_cell_sensitivity[resistant])    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
   }
 
   size_t pick_event(const std::array< float, 12>& rates, float sum) {

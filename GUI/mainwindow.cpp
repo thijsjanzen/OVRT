@@ -647,30 +647,30 @@ void MainWindow::update_parameters(Param& p) {
 
    auto t_cell_sens_stromal_string = ui->drpdwnbox_stromal_t_cell->currentText();
    if (t_cell_sens_stromal_string == "sensitive") {
-       p.t_cell_sensitivity_stromal = true;
+       p.t_cell_sensitivity[normal] = true;
    } else {
-       p.t_cell_sensitivity_stromal = false;
+       p.t_cell_sensitivity[normal] = false;
    }
 
    auto t_cell_sens_cancer_string = ui->drpdwnbox_cancer_t_cell->currentText();
    if (t_cell_sens_cancer_string == "sensitive") {
-       p.t_cell_sensitivity_cancer = true;
+       p.t_cell_sensitivity[cancer] = true;
    } else {
-       p.t_cell_sensitivity_cancer = false;
+       p.t_cell_sensitivity[cancer] = false;
    }
 
    auto t_cell_sens_infected_string = ui->drpdwnbox_infected_t_cell->currentText();
    if (t_cell_sens_infected_string == "sensitive") {
-       p.t_cell_sensitivity_infected = true;
+       p.t_cell_sensitivity[infected] = true;
    } else {
-       p.t_cell_sensitivity_infected = false;
+       p.t_cell_sensitivity[infected] = false;
    }
 
    auto t_cell_sens_resistant_string = ui->drpdwnbox_resistant_t_cell->currentText();
    if (t_cell_sens_resistant_string == "sensitive") {
-       p.t_cell_sensitivity_resistant = true;
+       p.t_cell_sensitivity[resistant] = true;
    } else {
-       p.t_cell_sensitivity_resistant = false;
+       p.t_cell_sensitivity[resistant] = false;
    }
 
 
@@ -1215,9 +1215,9 @@ void MainWindow::on_drpdwnbox_stromal_t_cell_activated(int index)
 {
     auto t_cell_sens_stromal_string = ui->drpdwnbox_stromal_t_cell->currentText();
     if (t_cell_sens_stromal_string == "sensitive") {
-        sim->parameters.t_cell_sensitivity_stromal = true;
+        sim->parameters.t_cell_sensitivity[normal] = true;
     } else {
-        sim->parameters.t_cell_sensitivity_stromal = false;
+        sim->parameters.t_cell_sensitivity[normal] = false;
     }
 }
 
@@ -1226,9 +1226,9 @@ void MainWindow::on_drpdwnbox_cancer_t_cell_activated(int index)
 {
     auto t_cell_sens_cancer_string = ui->drpdwnbox_cancer_t_cell->currentText();
     if (t_cell_sens_cancer_string == "sensitive") {
-        sim->parameters.t_cell_sensitivity_cancer = true;
+        sim->parameters.t_cell_sensitivity[cancer] = true;
     } else {
-        sim->parameters.t_cell_sensitivity_cancer = false;
+        sim->parameters.t_cell_sensitivity[cancer] = false;
     }
 }
 
@@ -1237,9 +1237,9 @@ void MainWindow::on_drpdwnbox_infected_t_cell_activated(int index)
 {
     auto t_cell_sens_infected_string = ui->drpdwnbox_infected_t_cell->currentText();
     if (t_cell_sens_infected_string == "sensitive") {
-        sim->parameters.t_cell_sensitivity_infected = true;
+        sim->parameters.t_cell_sensitivity[infected] = true;
     } else {
-        sim->parameters.t_cell_sensitivity_infected = false;
+        sim->parameters.t_cell_sensitivity[infected] = false;
     }
 }
 
@@ -1248,9 +1248,9 @@ void MainWindow::on_drpdwnbox_resistant_t_cell_activated(int index)
 {
     auto t_cell_sens_resistant_string = ui->drpdwnbox_resistant_t_cell->currentText();
     if (t_cell_sens_resistant_string == "sensitive") {
-        sim->parameters.t_cell_sensitivity_resistant = true;
+        sim->parameters.t_cell_sensitivity[resistant] = true;
     } else {
-        sim->parameters.t_cell_sensitivity_resistant = false;
+        sim->parameters.t_cell_sensitivity[resistant] = false;
     }
 }
 

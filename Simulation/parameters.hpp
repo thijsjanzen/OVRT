@@ -10,15 +10,11 @@
 #include <cstdio>
 #include <cmath>
 #include <random>
+#include <array>
 
 enum infection_routine {random_infection, center_infection, periphery_infection};
 enum start_type {full, grow, converge, empty_grid};
 enum grid_type {regular, voronoi, hexagonal};
-enum t_cell_type {cancer_cell,
-                  infected_cell,
-                  cancer_and_resistant,
-                  cancer_infected_resistant,
-                  none};
 
 
 struct Param {
@@ -73,10 +69,7 @@ struct Param {
   float t_cell_inflection_point;
 
 
-  bool t_cell_sensitivity_stromal;
-  bool t_cell_sensitivity_cancer;
-  bool t_cell_sensitivity_infected;
-  bool t_cell_sensitivity_resistant;
+  std::array< bool, 4 > t_cell_sensitivity;
 
   Param() {
     std::random_device rd;
@@ -128,10 +121,7 @@ struct Param {
     t_cell_threshold = 0.2f;
     t_cell_density_scaler = 1.0f;
 
-    t_cell_sensitivity_stromal = false;
-    t_cell_sensitivity_cancer = false;
-    t_cell_sensitivity_infected = false;
-    t_cell_sensitivity_resistant = false;
+    t_cell_sensitivity = {false, false, false, false};
   }
 
 
