@@ -255,32 +255,6 @@ public:
     total_t_cell_concentration += parameters.t_cell_increase;
   }
 
-  bool use_increased_death_rate(cell_type focal_cell_type) const {
-    if (focal_cell_type == cancer) {
-      if (parameters.t_cell_effect == cancer_cell)
-          return true;
-      if (parameters.t_cell_effect == cancer_and_resistant)
-          return true;
-      if (parameters.t_cell_effect == cancer_infected_resistant)
-          return true;
-    }
-    if (focal_cell_type == infected) {
-      if (parameters.t_cell_effect == infected_cell)
-          return true;
-      if (parameters.t_cell_effect == cancer_infected_resistant)
-          return true;
-    }
-    if (focal_cell_type == resistant) {
-      if (parameters.t_cell_effect == cancer_and_resistant) {
-          return true;
-      }
-      if (parameters.t_cell_effect == cancer_infected_resistant) {
-          return true;
-      }
-    }
-    return false;
-  }
-
   cell_type get_cell_type(size_t pos) const override {
     return world[pos].get_cell_type();
   }
@@ -470,7 +444,30 @@ public:
       auto local_cell_type = world[pos].get_cell_type();
       if (local_cell_type == empty) return 0.f;
 
-      return t_cell_death_prob[local_cell_type].get_value(pos);
+      auto local_death_rate = 0.0;
+      switch(local_cell_type) {
+          case normal: {
+              if (parameters.t_cell_sensitivity_stromal) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
+              break;
+          }
+          case cancer: {
+              if (parameters.t_cell_sensitivity_cancer) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
+              break;
+          }
+          case infected: {
+              if (parameters.t_cell_sensitivity_infected) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
+              break;
+          }
+          case resistant: {
+              if (parameters.t_cell_sensitivity_resistant) local_death_rate = t_cell_death_prob[local_cell_type].get_value(pos);
+              break;
+          }
+          default: {
+              local_death_rate = 0.0;
+              break;
+          }
+      }
+      return local_death_rate;
   }
 
   void reset_t_cell_death_rate() override {
@@ -705,10 +702,10 @@ private:
     rates[10] = 0.f;
     rates[11] = 0.f;
 
-    if (use_increased_death_rate(normal)) rates[8] = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
-    if (use_increased_death_rate(cancer)) rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
-    if (use_increased_death_rate(infected)) rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
-    if (use_increased_death_rate(resistant)) rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
+    if (parameters.t_cell_sensitivity_stromal)      rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
+    if (parameters.t_cell_sensitivity_cancer)       rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
+    if (parameters.t_cell_sensitivity_infected)     rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
+    if (parameters.t_cell_sensitivity_resistant)    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
   }
 
   size_t pick_event(const std::array< float, 12>& rates, float sum) {

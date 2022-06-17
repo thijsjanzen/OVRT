@@ -139,7 +139,13 @@ private slots:
 
     void on_box_start_setup_activated();
 
-    void on_drpdwnbox_t_cell_type_activated();
+    void on_drpdwnbox_stromal_t_cell_activated(int index);
+
+    void on_drpdwnbox_cancer_t_cell_activated(int index);
+
+    void on_drpdwnbox_infected_t_cell_activated(int index);
+
+    void on_drpdwnbox_resistant_t_cell_activated(int index);
 
 private:
     Ui::MainWindow *ui;

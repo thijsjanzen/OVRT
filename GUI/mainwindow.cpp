@@ -98,10 +98,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->box_grid_type->addItem("regular");
     ui->box_grid_type->addItem("hexagonal");
 
-    ui->drpdwnbox_t_cell_type->addItem("cancer");
-    ui->drpdwnbox_t_cell_type->addItem("infected");
-    ui->drpdwnbox_t_cell_type->addItem("cancer and resistant");
-    ui->drpdwnbox_t_cell_type->addItem("cancer, infected and resistant");
+    ui->drpdwnbox_stromal_t_cell->addItem("resistant");
+    ui->drpdwnbox_stromal_t_cell->addItem("sensitive");
+
+    ui->drpdwnbox_cancer_t_cell->addItem("resistant");
+    ui->drpdwnbox_cancer_t_cell->addItem("sensitive");
+
+    ui->drpdwnbox_infected_t_cell->addItem("resistant");
+    ui->drpdwnbox_infected_t_cell->addItem("sensitive");
+
+    ui->drpdwnbox_resistant_t_cell->addItem("resistant");
+    ui->drpdwnbox_resistant_t_cell->addItem("sensitive");
+
 
     is_paused = false;
     is_running = false;
@@ -579,7 +587,6 @@ void MainWindow::update_parameters(Param& p) {
    p.t_cell_density_scaler = static_cast<float>(ui->box_density_scaler->value());
    p.t_cell_inflection_point = static_cast<float>(ui->box_inflection_point->value());
 
-
    p.sq_num_cells = static_cast<size_t>(ui->box_sq_num_cells->value());
 
    p.infection_type = random_infection;
@@ -638,18 +645,33 @@ void MainWindow::update_parameters(Param& p) {
        p.use_voronoi_grid = true; // simulation flag
    }
 
-   auto t_cell_type_string = ui->drpdwnbox_t_cell_type->currentText();
-   if (t_cell_type_string == "cancer")
-     p.t_cell_effect = cancer_cell;
-   if (t_cell_type_string == "infected")
-     p.t_cell_effect = infected_cell;
-   if (t_cell_type_string == "cancer and resistant")
-     p.t_cell_effect = cancer_and_resistant;
-   if (t_cell_type_string == "cancer, infected and resistant")
-     p.t_cell_effect = cancer_infected_resistant;
+   auto t_cell_sens_stromal_string = ui->drpdwnbox_stromal_t_cell->currentText();
+   if (t_cell_sens_stromal_string == "sensitive") {
+       p.t_cell_sensitivity_stromal = true;
+   } else {
+       p.t_cell_sensitivity_stromal = false;
+   }
 
+   auto t_cell_sens_cancer_string = ui->drpdwnbox_cancer_t_cell->currentText();
+   if (t_cell_sens_cancer_string == "sensitive") {
+       p.t_cell_sensitivity_cancer = true;
+   } else {
+       p.t_cell_sensitivity_cancer = false;
+   }
 
+   auto t_cell_sens_infected_string = ui->drpdwnbox_infected_t_cell->currentText();
+   if (t_cell_sens_infected_string == "sensitive") {
+       p.t_cell_sensitivity_infected = true;
+   } else {
+       p.t_cell_sensitivity_infected = false;
+   }
 
+   auto t_cell_sens_resistant_string = ui->drpdwnbox_resistant_t_cell->currentText();
+   if (t_cell_sens_resistant_string == "sensitive") {
+       p.t_cell_sensitivity_resistant = true;
+   } else {
+       p.t_cell_sensitivity_resistant = false;
+   }
 
 
    p.sq_num_pixels = static_cast<size_t>(ui->box_sq_num_pixels->value());
@@ -1189,20 +1211,46 @@ void MainWindow::on_box_start_setup_activated()
       setup_simulation();
 }
 
-void MainWindow::on_drpdwnbox_t_cell_type_activated()
+void MainWindow::on_drpdwnbox_stromal_t_cell_activated(int index)
 {
-  auto t_cell_type_string = ui->drpdwnbox_t_cell_type->currentText();
-  if (t_cell_type_string == "cancer")
-    sim->parameters.t_cell_effect = cancer_cell;
-  if (t_cell_type_string == "infected")
-    sim->parameters.t_cell_effect = infected_cell;
-  if (t_cell_type_string == "cancer and resistant")
-    sim->parameters.t_cell_effect = cancer_and_resistant;
-  if (t_cell_type_string == "cancer, infected and resistant")
-    sim->parameters.t_cell_effect = cancer_infected_resistant;
-
-
-  sim->reset_t_cell_death_rate();
-  update_display();
-  QApplication::processEvents();
+    auto t_cell_sens_stromal_string = ui->drpdwnbox_stromal_t_cell->currentText();
+    if (t_cell_sens_stromal_string == "sensitive") {
+        sim->parameters.t_cell_sensitivity_stromal = true;
+    } else {
+        sim->parameters.t_cell_sensitivity_stromal = false;
+    }
 }
+
+
+void MainWindow::on_drpdwnbox_cancer_t_cell_activated(int index)
+{
+    auto t_cell_sens_cancer_string = ui->drpdwnbox_cancer_t_cell->currentText();
+    if (t_cell_sens_cancer_string == "sensitive") {
+        sim->parameters.t_cell_sensitivity_cancer = true;
+    } else {
+        sim->parameters.t_cell_sensitivity_cancer = false;
+    }
+}
+
+
+void MainWindow::on_drpdwnbox_infected_t_cell_activated(int index)
+{
+    auto t_cell_sens_infected_string = ui->drpdwnbox_infected_t_cell->currentText();
+    if (t_cell_sens_infected_string == "sensitive") {
+        sim->parameters.t_cell_sensitivity_infected = true;
+    } else {
+        sim->parameters.t_cell_sensitivity_infected = false;
+    }
+}
+
+
+void MainWindow::on_drpdwnbox_resistant_t_cell_activated(int index)
+{
+    auto t_cell_sens_resistant_string = ui->drpdwnbox_resistant_t_cell->currentText();
+    if (t_cell_sens_resistant_string == "sensitive") {
+        sim->parameters.t_cell_sensitivity_resistant = true;
+    } else {
+        sim->parameters.t_cell_sensitivity_resistant = false;
+    }
+}
+

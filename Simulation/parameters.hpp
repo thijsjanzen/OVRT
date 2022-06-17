@@ -63,7 +63,6 @@ struct Param {
   bool using_3d;
 
   start_type start_setup;
-  t_cell_type t_cell_effect;
 
   float t_cell_increase;
   float evaporation;
@@ -72,6 +71,12 @@ struct Param {
   float t_cell_threshold;
   float t_cell_density_scaler;
   float t_cell_inflection_point;
+
+
+  bool t_cell_sensitivity_stromal;
+  bool t_cell_sensitivity_cancer;
+  bool t_cell_sensitivity_infected;
+  bool t_cell_sensitivity_resistant;
 
   Param() {
     std::random_device rd;
@@ -116,13 +121,17 @@ struct Param {
     using_3d = false;
 
 
-    t_cell_effect = none;
     t_cell_increase = 0.f;
     evaporation = 0.01f;
     diffusion = 0.1f;
     t_cell_rate = 10;
     t_cell_threshold = 0.2f;
     t_cell_density_scaler = 1.0f;
+
+    t_cell_sensitivity_stromal = false;
+    t_cell_sensitivity_cancer = false;
+    t_cell_sensitivity_infected = false;
+    t_cell_sensitivity_resistant = false;
   }
 
 
