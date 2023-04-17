@@ -13,13 +13,11 @@ void obtain_equilibrium(simulation& Simulation, const Param& all_parameters);
 int main(int argc, char *argv[]) {
 
   std::cout << "Welcome to this In Silico Simulation of oncolytic tumor virotherapy\n";
-  std::cout << "Copyright 2019 - 2022, D. Bhatt, T. Janzen & F.J. Weissing\n";
-  std::cout << "This is version: 0.9.0\n";
+  std::cout << "Copyright 2019 - 2023, D. Bhatt, T. Janzen & F.J. Weissing\n";
+  std::cout << "This is version: 0.9.5\n";
 
   std::cout << "All files are to be found in this folder: \n";
   std::cout << argv[0] << "\n";
-
-
 
   InputParser input(argc, argv);
 
@@ -157,6 +155,8 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
   } else {
       p.t_cell_sensitivity[resistant] = false;
   }
+
+  p.t_cell_infected_relative_rate = from_config.getValueOfKey<float>("relative_rate_infected");
 
   return;
 }

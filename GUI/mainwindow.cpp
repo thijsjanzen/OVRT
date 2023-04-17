@@ -70,6 +70,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->t_cell_plot->xAxis->setLabel("log10(concentration)");
     ui->t_cell_plot->yAxis->setLabel("Frequency");
 
+    // nni plot
+
+    ui->nni_plot->addGraph();
+
+    nni_bars = new QCPBars(ui->nni_plot->xAxis,
+                             ui->nni_plot->yAxis);
+
+    nni_bars->setName("Inflammation factor concentration");
+    nni_bars->setPen(QPen(Qt::blue));
+    nni_bars->setBrush(QBrush(QColor(0, 0, 255, static_cast<int>(0.5 * 255))));
+    nni_bars->setAntialiased(false);
+    nni_bars->setAntialiasedFill(false);
+    ui->nni_plot->xAxis->setLabel("Distance to neighbours");
+    ui->nni_plot->yAxis->setLabel("Frequency");
+
+
     ui->progressBar->setValue(0);
 
     update_speed = ui->speed_slider->value();
@@ -153,8 +169,11 @@ QColor get_t_cell_color(float concentration) {
   }
 
   float rel_conc = concentration / 0.01; // for nicer display
+  if (rel_conc > 1.f) rel_conc = 1.f;
+  auto x = 255 - static_cast<int>(rel_conc * 255);
 
-  QColor col = {255, 0, 255, static_cast<int>(rel_conc * 255)};
+
+  QColor col = {255, x, 255, 255};
   return col;
 }
 
@@ -495,6 +514,57 @@ void MainWindow::update_image(const std::array< binned_distribution, 4 >& growth
     ui->q_label->update();
 }
 
+void MainWindow::update_nni_hist() {
+
+    std::vector<float> vals;
+    for(size_t i = 0; i < sim->num_cells; ++i) {
+        if (sim->get_nni(i) > 0) {
+            vals.push_back(sim->get_nni(i));
+        }
+    }
+    if (vals.empty()) return;
+    std::sort(vals.begin(), vals.end());
+    float max_conc = vals.back();
+    float min_conc = vals.front();
+
+   int num_bins = 20;
+   std::vector<size_t> hist(num_bins, 0);
+   float bin_size = (max_conc - min_conc) / num_bins;
+   nni_bars->setWidth(bin_size);
+
+   for (const auto& i : vals) {
+       size_t bin = (i - min_conc) / (bin_size);
+       if (bin >= hist.size()) {
+        hist.back()++;
+       } else {
+        hist[bin]++;
+       }
+   }
+
+
+   QVector<double> xvals(num_bins);
+   QVector<double> yvals(num_bins);
+ //  double max_y_val = 0.0;
+   for(size_t i = 0; i < hist.size(); ++i) {
+       xvals[i] = min_conc + i * bin_size;
+       yvals[i] = hist[i];
+ //      if(hist[i] > max_y_val) max_y_val = hist[i];
+   }
+
+   nni_bars->setData(xvals, yvals);
+
+  // ui->t_cell_plot->xAxis->setRange(-5, 0.0);
+
+  // ui->t_cell_plot->yAxis->setRange(0, max_y_val * 1.05);
+
+   ui->nni_plot->rescaleAxes();
+
+   ui->nni_plot->replot();
+   ui->nni_plot->update();
+ }
+
+
+
 void MainWindow::update_t_cell_hist() {
 
     std::vector<float> vals;
@@ -544,7 +614,7 @@ void MainWindow::update_t_cell_hist() {
 
    ui->t_cell_plot->replot();
    ui->t_cell_plot->update();
-}
+ }
 
 
 std::string get_string(std::string s, float v) {
@@ -590,6 +660,8 @@ void MainWindow::update_parameters(Param& p) {
    p.sq_num_cells = static_cast<size_t>(ui->box_sq_num_cells->value());
 
    p.infection_type = random_infection;
+
+   p.t_cell_infected_relative_rate = static_cast<float>(ui->box_relative_rate->value());
 
    auto infection_string = ui->box_infection_routine->currentText();
    if(infection_string == "Random")
@@ -773,6 +845,7 @@ void MainWindow::update_display() {
   if (sim->parameters.t_cell_increase > 0.0) {
       update_t_cell_hist();
   }
+  update_nni_hist();
 
   QApplication::processEvents();
 }
@@ -1252,5 +1325,11 @@ void MainWindow::on_drpdwnbox_resistant_t_cell_activated(int index)
     } else {
         sim->parameters.t_cell_sensitivity[resistant] = false;
     }
+}
+
+
+void MainWindow::on_box_relative_rate_valueChanged(double arg1)
+{
+    sim->parameters.t_cell_infected_relative_rate = ui->box_relative_rate->value();
 }
 

@@ -61,6 +61,7 @@ public:
     void update_3d_gui();
 
     void update_t_cell_hist();
+    void update_nni_hist();
 
 private slots:
     void on_btn_start_clicked();
@@ -147,6 +148,8 @@ private slots:
 
     void on_drpdwnbox_resistant_t_cell_activated(int index);
 
+    void on_box_relative_rate_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     QImage image_;
@@ -182,6 +185,7 @@ private:
     std::vector< QColor > colorz;
 
     QCPBars *tcell_bars;
+    QCPBars *nni_bars;
 };
 
 

@@ -24,6 +24,9 @@ public:
   float t_cell_concentration;
   float t_cell_death_rate;
 
+  int nearest_cancer_cell;
+  int nearest_cancer_cell_check_id;
+
   std::vector< node_base* > neighbors;
 
   node_base(node_base&&) = delete;
@@ -137,19 +140,64 @@ public:
         added_t_cell_death_rate = 1e9;
      }
 
-    float mult = 1.0f - t_cell_density_scaler *
-        freq_type_neighbours(cancer);
+    if (t_cell_density_scaler != 1.f) {
 
-    if(mult < 0.f) mult = 0.f;
-    t_cell_death_rate = mult * added_t_cell_death_rate;
+        float mult = 1.0f - t_cell_density_scaler * freq_type_neighbours(cancer);
+
+        if(mult < 0.f) mult = 0.f;
+        t_cell_death_rate = mult * added_t_cell_death_rate;
+    } else {
+        t_cell_death_rate = added_t_cell_death_rate;
+    }
+
     if (std::isinf(t_cell_death_rate)) {
         t_cell_death_rate = 1e9;
-      }
+    }
     if (t_cell_death_rate >= std:: numeric_limits<float>::max()) {
         t_cell_death_rate = 1e9;
-      }
+    }
     return;
   }
+/*
+  int cancer_dive(int depth, int search_id) {
+      for (const auto& i : neighbors) {
+          if (i->get_cell_type() == cell_type::cancer) {
+              return depth + 1;
+          }
+      }
+      // if the direct neighbors don't have anything, jump deeper:
+      int min_nc = 1e6;
+      for (const auto& i : neighbors) {
+            if (i->nearest_cancer_cell_check_id != search_id) {
+                int nc = i->cancer_dive(depth + 1, search_id);
+                i->nearest_cancer_cell_check_id = search_id;
+                if (nc < min_nc) min_nc = nc;
+            }
+      }
+      nearest_cancer_cell_check_id = search_id;
+      return min_nc;
+  }
+
+
+  int find_nearest_cancer_cell(int search_id) const {
+      // first, we check if there is a direct neighbor, often, this is the case:
+      for (const auto& i : neighbors) {
+          if (i->get_cell_type() == cell_type::cancer) {
+              return 1;
+          }
+      }
+
+      // if this is not the case, we have to do a deep dive:
+      int min_nc = 1e6;
+      for (const auto& i : neighbors) {
+            int nc = i->cancer_dive(1, search_id);
+            if (nc < min_nc) min_nc = nc;
+            if (min_nc == 2) break;
+      }
+      return min_nc;
+  }
+*/
+
 
 };
 

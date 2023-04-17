@@ -71,6 +71,8 @@ struct Param {
 
   std::array< bool, 4 > t_cell_sensitivity;
 
+  float t_cell_infected_relative_rate;
+
   Param() {
     std::random_device rd;
     seed = rd();
@@ -122,6 +124,7 @@ struct Param {
     t_cell_density_scaler = 1.0f;
 
     t_cell_sensitivity = {false, false, false, false};
+    t_cell_infected_relative_rate = 1.0f;
   }
 
 

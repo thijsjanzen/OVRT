@@ -147,7 +147,10 @@ public:
 
   }
 
-  float get_total_sum() const {
+  float get_total_sum() {
+    if (total_sum > 1e8) {
+        update_all();
+    }
     return total_sum;
   }
 

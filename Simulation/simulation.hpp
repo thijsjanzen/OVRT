@@ -37,6 +37,7 @@ public:
 
   virtual cell_type get_cell_type(size_t) const = 0;
   virtual float get_t_cell_concentration(size_t) const = 0;
+  virtual int get_nni(size_t pos) const = 0;
 
 
   virtual std::array<size_t, 5> get_count_cell_types() const = 0;
@@ -201,11 +202,31 @@ public:
         int delta_t_ms = static_cast<int>(10 * (t + dt)) - static_cast<int>(10 * t);
         if(delta_t_ms > 0) {
             diffuse();
-          }
+        }
+
+        /*if(delta_t_ms > 0) {
+           reset_nni();
+           update_nni();
+        }*/
       }
 
     t += dt;
   }
+
+  /*void reset_nni() {
+      for (auto& i : world) {
+          i.nearest_cancer_cell = -1;
+      }
+  }
+
+  void update_nni() {
+      for (auto& i : world) {
+          if (i.get_cell_type() == cell_type::infected) {
+              auto nni = i.find_nearest_cancer_cell(rndgen.random_number(1e9));
+              i.nearest_cancer_cell = nni;
+          }
+      }
+  }*/
 
   void diffuse() {
     std::vector<float> new_concentration(world.size(), 0.f);
@@ -243,7 +264,6 @@ public:
                                           parameters.t_cell_inflection_point);
 
         update_t_cell_death_prob(world[i].t_cell_death_rate, i);
-
     }
     total_t_cell_concentration = std::accumulate(new_concentration.begin(),
                                                  new_concentration.end(),
@@ -261,6 +281,10 @@ public:
 
   float get_t_cell_concentration(size_t pos) const override {
     return world[pos].t_cell_concentration;
+  }
+
+  int get_nni(size_t pos) const override {
+      return world[pos].nearest_cancer_cell;
   }
 
   void update_growth_prob(size_t pos) {
@@ -671,10 +695,8 @@ private:
     rates[2] = parameters.birth_cancer   * growth_prob[cancer].get_total_sum();
     rates[3] = parameters.death_cancer   * death_prob[cancer].get_total_sum();
 
-
     rates[4] = parameters.birth_infected * growth_prob[infected].get_total_sum();
     rates[5] = parameters.death_infected * death_prob[infected].get_total_sum();
-
 
     rates[6] = parameters.birth_cancer_resistant * growth_prob[resistant].get_total_sum();
     rates[7] = parameters.death_cancer_resistant * death_prob[resistant].get_total_sum();
@@ -687,7 +709,7 @@ private:
 
     if (parameters.t_cell_sensitivity[normal])       rates[8]  = parameters.t_cell_rate * t_cell_death_prob[normal].get_total_sum();
     if (parameters.t_cell_sensitivity[cancer])       rates[9]  = parameters.t_cell_rate * t_cell_death_prob[cancer].get_total_sum();
-    if (parameters.t_cell_sensitivity[infected])     rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum();
+    if (parameters.t_cell_sensitivity[infected])     rates[10] = parameters.t_cell_rate * t_cell_death_prob[infected].get_total_sum() * parameters.t_cell_infected_relative_rate;
     if (parameters.t_cell_sensitivity[resistant])    rates[11] = parameters.t_cell_rate * t_cell_death_prob[resistant].get_total_sum();
   }
 
@@ -742,19 +764,19 @@ private:
         }
 
       case 8: {
-          implement_death(normal, true);
+          implement_death(normal, true); // normal death by t-cell
           break;
       }
       case 9: {
-        implement_death(cancer, true);
+        implement_death(cancer, true); // cancer death by t-cell
         break;
       }
       case 10: {
-        implement_death(infected, true);
+        implement_death(infected, true); // infected death by t-cell
          break;
       }
       case 11: {
-        implement_death(resistant, true);
+        implement_death(resistant, true); // resistant death by t-cell
         break;
       }
 
