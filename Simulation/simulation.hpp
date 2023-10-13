@@ -31,6 +31,7 @@ public:
   size_t num_cells;
   size_t sq_size;
   float total_t_cell_concentration;
+  float prev_diffusion_update;
   Param parameters;
   virtual ~simulation() {}
   virtual void update_one_step() = 0;
@@ -118,6 +119,7 @@ public:
       }
 
     long_distance_infection_probability = std::vector<double>(sq_size, parameters.prob_infection_upon_death);
+    prev_diffusion_update = 0.f;
   }
 
   simulation_impl(const Param& param,
@@ -199,10 +201,18 @@ public:
       }
 
     if(total_t_cell_concentration > 0.f) {
-        int delta_t_ms = static_cast<int>(10 * (t + dt)) - static_cast<int>(10 * t);
-        if(delta_t_ms > 0) {
-            diffuse();
-        }
+       // bool choice = false;
+       // if (choice) {
+       //   int delta_t_ms = static_cast<int>(10 * (t + dt)) - static_cast<int>(10 * t);
+       //   if(delta_t_ms > 0) {
+       //     diffuse();
+       //     }
+       // } else {
+          if (t + dt - prev_diffusion_update > parameters.dt_diffusion_update) {
+              prev_diffusion_update = t + dt;
+              diffuse();
+          }
+        //}
 
         /*if(delta_t_ms > 0) {
            reset_nni();
@@ -234,6 +244,7 @@ public:
       if(world[i].t_cell_concentration > 0.f) {
 
         float current_conc = world[i].t_cell_concentration;
+        float before = current_conc;
         new_concentration[i] += current_conc;
 
         for(const auto& j : world[i].neighbors) {
@@ -250,6 +261,13 @@ public:
              new_concentration[other_pos] += diffusion_amount;
            }
         }
+        float after = new_concentration[i];
+        float local_diff = before - after;
+        if (after < 0) {
+           int a = 5;
+        }
+        float rel_diff = local_diff / before;
+        float a = 5;
       }
     }
 

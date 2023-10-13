@@ -68,6 +68,8 @@ struct Param {
   float t_cell_density_scaler;
   float t_cell_inflection_point;
 
+  float dt_diffusion_update;
+
 
   std::array< bool, 4 > t_cell_sensitivity;
 
@@ -125,6 +127,8 @@ struct Param {
 
     t_cell_sensitivity = {false, false, false, false};
     t_cell_infected_relative_rate = 1.0f;
+
+    dt_diffusion_update = 0.01f;
   }
 
 
