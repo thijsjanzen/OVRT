@@ -1,5 +1,5 @@
 # OVI 
-![example workflow](https://github.com/rugtres/ovr/actions/workflows/build.yml/badge.svg)
+![example workflow](https://github.com/rugtres/OVI/actions/workflows/build.yml/badge.svg)
 
 Oncolytic Virus Immune simulation
 
@@ -19,14 +19,14 @@ Testing is performed using the Catch2 framework, based on the console version. T
 
 Branch|Code Coverage
 ---|---
-master|[![codecov](https://codecov.io/gh/thijsjanzen/ovri/branch/main/graph/badge.svg)](https://codecov.io/gh/thijsjanzen/ovri)
+master|[![codecov](https://codecov.io/gh/rugtres/OVI/branch/main/graph/badge.svg)](https://codecov.io/gh/rugtres/OVI)
 
 ## Screenshots
 
 Default coloring of cells:
-![](https://github.com/thijsjanzen/OVRI/blob/main/Screenshots/GUI.png)
+![](https://github.com/rugtres/OVI/blob/main/Screenshots/GUI.png)
 
 Inflammation factor visualisation:
-![](https://github.com/thijsjanzen/OVRI/blob/main/Screenshots/Inflammation_factor.png)
+![](https://github.com/rugtres/OVI/blob/main/Screenshots/Inflammation_factor.png)
 
 
