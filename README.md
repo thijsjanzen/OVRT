@@ -1,5 +1,5 @@
 # OVI 
-![example workflow](https://github.com/rugtres/OVI/actions/workflows/build.yml/badge.svg)
+![example workflow](https://github.com/rugtres/OVI/actions/workflows/main.yml/badge.svg)
 
 Oncolytic Virus Immune simulation
 
