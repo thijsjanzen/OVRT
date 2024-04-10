@@ -1,7 +1,7 @@
-# OVRI 
+# OVI 
 ![example workflow](https://github.com/rugtres/ovr/actions/workflows/build.yml/badge.svg)
 
-Oncolytic Virus Resistance simulation with Immune response
+Oncolytic Virus Immune simulation
 
 Repository for code and executable simulating the interplay between a tumour and an Oncolytic Virus, including anti-viral resistance and immune response.
 
@@ -20,3 +20,13 @@ Testing is performed using the Catch2 framework, based on the console version. T
 Branch|Code Coverage
 ---|---
 master|[![codecov](https://codecov.io/gh/thijsjanzen/ovri/branch/main/graph/badge.svg)](https://codecov.io/gh/thijsjanzen/ovri)
+
+## Screenshots
+
+Default coloring of cells:
+![](https://github.com/thijsjanzen/OVRI/blob/main/Screenshots/GUI.png)
+
+Inflammation factor visualisation:
+![](https://github.com/thijsjanzen/OVRI/blob/main/Screenshots/Inflammation_factor.png)
+
+
