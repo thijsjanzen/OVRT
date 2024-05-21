@@ -121,6 +121,8 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
     p.start_setup = grow;
   if(start_string == "Full")
     p.start_setup = full;
+  if(start_string == "Random")
+    p.start_setup = random_grid;
 
   auto grid_string = from_config.getValueOfKey<std::string>("grid_type");
   if(grid_string == "regular")
