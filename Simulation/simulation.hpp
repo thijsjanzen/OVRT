@@ -571,6 +571,21 @@ public:
       }
   }
 
+  void initialize_random() {
+      for(auto& i : world) {
+          change_cell_type(i.pos, normal);
+      }
+
+      size_t new_cancer_cells = 0;
+      while(new_cancer_cells < parameters.initial_number_cancer_cells) {
+          size_t rand_index = rndgen.random_number(world.size());
+          if (get_cell_type(rand_index) != cancer) {
+              change_cell_type(rand_index, cancer);
+              new_cancer_cells++;
+          }
+      }
+  }
+
   void test_change_cell_type(const size_t& pos,
                              const cell_type& new_cell_type) {
     change_cell_type(pos, new_cell_type);
@@ -673,6 +688,14 @@ public:
 
     if(parameters.start_setup == full) {
         initialize_full();
+    }
+
+    if (parameters.start_setup == random_grid) {
+        initialize_random();
+        for(size_t i = 0; i < num_cells; ++i) {
+            update_growth_prob(i);
+            update_death_prob(i);
+        }
     }
 
     for(size_t i = 0; i < growth_prob.size(); ++i) {

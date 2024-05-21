@@ -13,7 +13,7 @@
 #include <array>
 
 enum infection_routine {random_infection, center_infection, periphery_infection};
-enum start_type {full, grow, converge, empty_grid};
+enum start_type {full, grow, converge, empty_grid, random_grid};
 enum grid_type {regular, voronoi, hexagonal};
 
 
