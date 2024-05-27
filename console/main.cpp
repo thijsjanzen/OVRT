@@ -13,8 +13,8 @@ void obtain_equilibrium(simulation& Simulation, const Param& all_parameters);
 int main(int argc, char *argv[]) {
 
   std::cout << "Welcome to this In Silico Simulation of oncolytic tumor virotherapy\n";
-  std::cout << "Copyright 2019 - 2023, D. Bhatt, T. Janzen & F.J. Weissing\n";
-  std::cout << "This is version: 0.9.5\n";
+  std::cout << "Copyright 2019 - 2024, D. Bhatt, T. Janzen & F.J. Weissing\n";
+  std::cout << "This is version: 0.9.6\n";
 
   std::cout << "All files are to be found in this folder: \n";
   std::cout << argv[0] << "\n";

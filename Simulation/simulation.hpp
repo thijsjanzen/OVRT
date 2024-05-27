@@ -573,13 +573,38 @@ public:
 
   void initialize_random() {
       for(auto& i : world) {
-          change_cell_type(i.pos, normal);
+          change_cell_type(i.pos, empty);
+      }
+
+      size_t num_init_stromal_cells = parameters.initial_number_normal_cells;
+      size_t num_init_cancer_cells  = parameters.initial_number_cancer_cells;
+
+      if (num_init_stromal_cells + num_init_cancer_cells > world.size()) {
+          std::cout << "WARNING! You have requested too many initial cells!\n";
+          std::cout << "Rescaling numbers, ";
+          int old_total = num_init_stromal_cells + num_init_cancer_cells;
+          num_init_stromal_cells = static_cast<size_t>(world.size() * 1.0 * num_init_stromal_cells / old_total);
+          num_init_cancer_cells  = static_cast<size_t>(world.size() * 1.0 * num_init_cancer_cells / old_total);
+
+          std::cout << "now starting with: \n";
+          std::cout << num_init_stromal_cells << " stromal cells\n";
+          std::cout << num_init_cancer_cells << " cancer cells\n";
+      }
+
+
+      size_t new_normal_cells = 0;
+      while(new_normal_cells < num_init_stromal_cells) {
+          size_t rand_index = rndgen.random_number(world.size());
+          if (get_cell_type(rand_index) != normal) {
+              change_cell_type(rand_index, normal);
+              new_normal_cells++;
+          }
       }
 
       size_t new_cancer_cells = 0;
-      while(new_cancer_cells < parameters.initial_number_cancer_cells) {
+      while(new_cancer_cells < num_init_cancer_cells) {
           size_t rand_index = rndgen.random_number(world.size());
-          if (get_cell_type(rand_index) != cancer) {
+          if (get_cell_type(rand_index) != cancer && get_cell_type(rand_index) != normal) {
               change_cell_type(rand_index, cancer);
               new_cancer_cells++;
           }

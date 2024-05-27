@@ -45,10 +45,9 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
               prev_cast_t = static_cast<int>(Simulation->t);
               cancer_added = true;
           }
-          if(prev_t < all_parameters.time_adding_virus &&
+          if(prev_t <= all_parameters.time_adding_virus &&
              Simulation->t >= all_parameters.time_adding_virus &&
-             virus_added   == false  &&
-             cancer_added  == true) {
+             virus_added   == false) {
            //  std::cout << "adding virus!\n";
              Simulation->add_infected(all_parameters.infection_type,
                                      all_parameters.percent_infected);
@@ -98,7 +97,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
                     break;
                 }
               }
-              if(all_parameters.start_setup == full) {
+              if(all_parameters.start_setup == full || all_parameters.start_setup == random_grid) {
                   if(cell_counts[cancer] < 1) {
                    //   std::cout << "cancer eradicated";
                       break;
