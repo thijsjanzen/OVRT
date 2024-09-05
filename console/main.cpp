@@ -116,7 +116,7 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
   if(infection_string == "Center")
     p.infection_type = center_infection;
 
-  auto start_string = from_config.getValueOfKey<std::string>("start_type");
+  auto start_string = from_config.getValueOfKey<std::string>("start_setup");
   if(start_string == "Grow")
     p.start_setup = grow;
   if(start_string == "Full")
