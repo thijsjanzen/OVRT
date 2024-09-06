@@ -79,31 +79,32 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
               prev_cast_t = cast_t;
 
             cell_counts = Simulation->get_count_cell_types();  //Simulation->num_cell_types;
+             // std::cout << cast_t << " " << cell_counts[cell_type::normal] << " " << cell_counts[cell_type::cancer] << " " << cell_counts[cell_type::infected] << " " << cell_counts[cell_type::resistant] << "\n";
 
               if(all_parameters.start_setup == grow ||
                  all_parameters.start_setup == converge) {
 
                 if(cell_counts[cancer] < 1 && virus_added == true) {
-                  //  std::cout << "cancer eradicated\n";
+                    std::cout << "cancer eradicated1\n";
                     break;
                 }
-                if(cell_counts[normal] < 1 && virus_added == true) {
-                  //  std::cout << "normal tissue gone\n";
-                    break;
-                }
+                //if(cell_counts[normal] < 1 && virus_added == true) {
+                //    std::cout << "normal tissue gone1\n";
+                //    break;
+                // }
                 if(cell_counts[infected] < 1 && virus_added == true &&
                    cell_counts[normal] < 1) {
-                  //  std::cout << "virus wiped out\n";
+                    std::cout << "virus wiped out\n";
                     break;
                 }
               }
               if(all_parameters.start_setup == full || all_parameters.start_setup == random_grid) {
                   if(cell_counts[cancer] < 1) {
-                   //   std::cout << "cancer eradicated";
+                      std::cout << "cancer eradicated2\n";
                       break;
                   }
                   if(cell_counts[normal] < 1) {
-                    //  std::cout << "normal tissue gone\n";
+                      std::cout << "normal tissue gone2\n";
                       break;
                   }
                }
@@ -120,6 +121,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
   // C: co-existence of the three populations
   cell_counts = Simulation->get_count_cell_types();
   total_t     = Simulation->t;
+  std::cout << total_t << "\n";
   return cell_counts;
 }
 

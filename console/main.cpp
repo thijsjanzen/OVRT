@@ -38,6 +38,8 @@ int main(int argc, char *argv[]) {
   std::array<size_t, 5> cell_counts = do_analysis(all_parameters, max_t);
   std::string outcome = get_outcome(cell_counts);
 
+  std::cout << outcome << "\n";
+
   if(!file_exists("output.txt")) {
       // write header to file
       std::ofstream outfile("output.txt");
