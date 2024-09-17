@@ -98,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->box_start_setup->addItem("Grow");
     ui->box_start_setup->addItem("Converge");
     ui->box_start_setup->addItem("Random");
+    ui->box_start_setup->addItem("Tumour");
 
 
     ui->drpdwnbox_display->addItem("Cell types");
@@ -682,6 +683,8 @@ void MainWindow::update_parameters(Param& p) {
         p.start_setup = converge;
     if(start_string == "Random")
         p.start_setup = random_grid;
+    if (start_string == "Tumour")
+        p.start_setup = tumour;
 
    auto display_string = ui->drpdwnbox_display->currentText();
    if(display_string == "Cell types")

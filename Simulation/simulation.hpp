@@ -171,7 +171,8 @@ public:
            t+dt >= parameters.time_adding_cancer) {
             add_cells(cancer);
           }
-
+    }
+    if (parameters.start_setup == grow || parameters.start_setup == tumour) {
         if(t < parameters.time_adding_virus &&
            t+dt >= parameters.time_adding_virus) {
             add_infected(parameters.infection_type,
@@ -184,6 +185,7 @@ public:
                          parameters.percent_infected_2);
           }
       }
+
 
     // check if the distributions are not getting close to zero,
     // in that case, some numerical irregularities might pop up
@@ -717,6 +719,14 @@ public:
 
     if (parameters.start_setup == random_grid) {
         initialize_random();
+        for(size_t i = 0; i < num_cells; ++i) {
+            update_growth_prob(i);
+            update_death_prob(i);
+        }
+    }
+
+    if (parameters.start_setup == tumour) {
+        for (auto& i : world) change_cell_type(i.pos, cancer);
         for(size_t i = 0; i < num_cells; ++i) {
             update_growth_prob(i);
             update_death_prob(i);
