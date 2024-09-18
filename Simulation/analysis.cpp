@@ -36,19 +36,18 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
   while(Simulation->t < all_parameters.maximum_time) {
           Simulation->update_one_step();
 
-          if(prev_t < all_parameters.time_adding_cancer &&
-             Simulation->t >= all_parameters.time_adding_cancer &&
+          if(Simulation->t >= all_parameters.time_adding_cancer &&
              cancer_added == false) {
-           //   std::cout << "adding cancer!\n";
+            //  std::cout << "adding cancer!\n";
               Simulation->add_cells(cancer);
               Simulation->t = 0.f; // reset time
               prev_cast_t = static_cast<int>(Simulation->t);
               cancer_added = true;
           }
-          if(prev_t <= all_parameters.time_adding_virus &&
-             Simulation->t >= all_parameters.time_adding_virus &&
-             virus_added   == false) {
-           //  std::cout << "adding virus!\n";
+          if(Simulation->t >= all_parameters.time_adding_virus &&
+             virus_added   == false &&
+             cancer_added == true) {
+          //   std::cout << "adding virus!\n";
              Simulation->add_infected(all_parameters.infection_type,
                                      all_parameters.percent_infected);
              Simulation->t = 0.f;
@@ -56,12 +55,11 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
              virus_added = true;
           }
 
-          if(prev_t < all_parameters.time_adding_virus_2 &&
-             Simulation->t >= all_parameters.time_adding_virus_2 &&
+          if(Simulation->t >= all_parameters.time_adding_virus_2 &&
              virus_added == true &&
              virus_added_2 == false &&
              cancer_added  == true) {
-           //   std::cout << "adding virus for the second time!\n";
+              std::cout << "adding virus for the second time!\n";
              Simulation->add_infected(all_parameters.infection_type_2,
                                      all_parameters.percent_infected_2);
              Simulation->t = 0.f;
@@ -79,7 +77,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
               prev_cast_t = cast_t;
 
             cell_counts = Simulation->get_count_cell_types();  //Simulation->num_cell_types;
-             // std::cout << cast_t << " " << cell_counts[cell_type::normal] << " " << cell_counts[cell_type::cancer] << " " << cell_counts[cell_type::infected] << " " << cell_counts[cell_type::resistant] << "\n";
+          //    std::cout << cast_t << " " << cell_counts[cell_type::normal] << " " << cell_counts[cell_type::cancer] << " " << cell_counts[cell_type::infected] << " " << cell_counts[cell_type::resistant] << "\n";
 
               if(all_parameters.start_setup == grow ||
                  all_parameters.start_setup == converge) {
