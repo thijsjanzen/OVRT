@@ -71,6 +71,9 @@ class simulation_impl : public simulation {
 public:
   bool using_3d;
 
+  bool cancer_added;
+  bool virus_added;
+
   std::vector< NODE > world;
   rnd_t rndgen;
 
@@ -97,6 +100,8 @@ public:
   {
     parameters = param;
     using_3d = false;
+    cancer_added = false;
+    virus_added = false;
     rndgen.set_seed(parameters.seed);
     total_t_cell_concentration = 0.f;
     sq_size = parameters.sq_num_cells;
@@ -127,7 +132,8 @@ public:
     parameters = param;
     using_3d = have_to_use_3d;
     rndgen.set_seed(parameters.seed);
-
+    cancer_added = false;
+    virus_added = false;
     sq_size = parameters.sq_num_cells;
     num_cells = sq_size * sq_size * sq_size;\
 
@@ -167,23 +173,18 @@ public:
     do_event(event);
 
     if(parameters.start_setup == grow) {
-        if(t < parameters.time_adding_cancer &&
-           t+dt >= parameters.time_adding_cancer) {
+        if(t+dt >= parameters.time_adding_cancer && cancer_added == false) {
             add_cells(cancer);
-          }
+            cancer_added = true;
+        }
     }
     if (parameters.start_setup == grow || parameters.start_setup == tumour) {
-        if(t < parameters.time_adding_virus &&
-           t+dt >= parameters.time_adding_virus) {
+        if(t+dt >= parameters.time_adding_virus &&
+           virus_added == false) {
             add_infected(parameters.infection_type,
                          parameters.percent_infected);
-          }
-
-        if(t < parameters.time_adding_virus_2 &&
-           t+dt >= parameters.time_adding_virus_2) {
-            add_infected(parameters.infection_type_2,
-                         parameters.percent_infected_2);
-          }
+            virus_added = true;
+        }
       }
 
 

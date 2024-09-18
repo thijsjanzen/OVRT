@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Welcome to this In Silico Simulation of oncolytic tumor virotherapy\n";
   std::cout << "Copyright 2019 - 2024, D. Bhatt, T. Janzen & F.J. Weissing\n";
-  std::cout << "This is version: 0.9.6\n";
+  std::cout << "This is version: 0.9.7\n";
 
   std::cout << "All files are to be found in this folder: \n";
   std::cout << argv[0] << "\n";
@@ -116,6 +116,8 @@ void read_parameters_from_ini(Param& p, const std::string file_name) {
   if(infection_string == "Random")
     p.infection_type = random_infection;
   if(infection_string == "Center")
+    p.infection_type = center_infection;
+  if (infection_string == "center_infection")
     p.infection_type = center_infection;
 
   auto start_string = from_config.getValueOfKey<std::string>("start_setup");

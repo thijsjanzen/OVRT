@@ -38,7 +38,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
 
           if(Simulation->t >= all_parameters.time_adding_cancer &&
              cancer_added == false) {
-            //  std::cout << "adding cancer!\n";
+              std::cout << "adding cancer!\n";
               Simulation->add_cells(cancer);
               Simulation->t = 0.f; // reset time
               prev_cast_t = static_cast<int>(Simulation->t);
@@ -47,7 +47,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
           if(Simulation->t >= all_parameters.time_adding_virus &&
              virus_added   == false &&
              cancer_added == true) {
-          //   std::cout << "adding virus!\n";
+             std::cout << "adding virus!\n";
              Simulation->add_infected(all_parameters.infection_type,
                                      all_parameters.percent_infected);
              Simulation->t = 0.f;
@@ -55,7 +55,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
              virus_added = true;
           }
 
-          if(Simulation->t >= all_parameters.time_adding_virus_2 &&
+       /*   if(Simulation->t >= all_parameters.time_adding_virus_2 &&
              virus_added == true &&
              virus_added_2 == false &&
              cancer_added  == true) {
@@ -65,7 +65,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
              Simulation->t = 0.f;
              prev_cast_t = static_cast<int>(Simulation->t);
              virus_added_2 = true;
-          }
+          }*/
 
           auto next_t = std::chrono::steady_clock::now();
 
@@ -77,7 +77,7 @@ std::array<size_t, 5> do_analysis(Param all_parameters, float& total_t) {
               prev_cast_t = cast_t;
 
             cell_counts = Simulation->get_count_cell_types();  //Simulation->num_cell_types;
-          //    std::cout << cast_t << " " << cell_counts[cell_type::normal] << " " << cell_counts[cell_type::cancer] << " " << cell_counts[cell_type::infected] << " " << cell_counts[cell_type::resistant] << "\n";
+              std::cout << cast_t << " " << cell_counts[cell_type::normal] << " " << cell_counts[cell_type::cancer] << " " << cell_counts[cell_type::infected] << " " << cell_counts[cell_type::resistant] << "\n";
 
               if(all_parameters.start_setup == grow ||
                  all_parameters.start_setup == converge) {

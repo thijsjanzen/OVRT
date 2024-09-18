@@ -94,9 +94,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->box_infection_routine->addItem("Random");
     ui->box_infection_routine->addItem("Periphery");
 
+    ui->box_start_setup->addItem("Converge");
     ui->box_start_setup->addItem("Full");
     ui->box_start_setup->addItem("Grow");
-    ui->box_start_setup->addItem("Converge");
     ui->box_start_setup->addItem("Random");
     ui->box_start_setup->addItem("Tumour");
 
@@ -119,8 +119,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->drpdwnbox_stromal_t_cell->addItem("resistant");
     ui->drpdwnbox_stromal_t_cell->addItem("sensitive");
 
-    ui->drpdwnbox_cancer_t_cell->addItem("resistant");
     ui->drpdwnbox_cancer_t_cell->addItem("sensitive");
+    ui->drpdwnbox_cancer_t_cell->addItem("resistant");
+
 
     ui->drpdwnbox_infected_t_cell->addItem("resistant");
     ui->drpdwnbox_infected_t_cell->addItem("sensitive");
