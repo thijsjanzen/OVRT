@@ -51,6 +51,7 @@ void parse_param(const InputParser& input,
     const std::string &temp = input.getCmdOption(flag);
     if (!temp.empty()) {
       param = std::stof(temp);
+      std::cout << "terminal " << flag << " : " << param << "\n";
     }
   }
 
@@ -72,6 +73,7 @@ void parse_param(const InputParser& input,
     const std::string &temp = input.getCmdOption("-s");
     if (!temp.empty()) {
       params.seed = static_cast<size_t>(std::stoi(temp));
+      std::cout << "terminal seed = " << params.seed << "\n";
     }
 
     return;
